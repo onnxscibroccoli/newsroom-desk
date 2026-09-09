@@ -18,9 +18,10 @@ export function readConsent(): Consent {
     const raw = window.localStorage.getItem(CONSENT_KEY);
     if (!raw) return DEFAULT_CONSENT;
     const parsed = JSON.parse(raw) as Partial<Consent>;
+    const ads = parsed.ads === true;
     return {
-      ads: parsed.ads === true,
-      geo: parsed.geo === true,
+      ads,
+      geo: ads && parsed.geo === true,
       updatedAt: typeof parsed.updatedAt === "string" ? parsed.updatedAt : "",
     };
   } catch {
@@ -30,6 +31,11 @@ export function readConsent(): Consent {
 
 export function writeConsent(next: Consent) {
   if (typeof window === "undefined") return;
-  window.localStorage.setItem(CONSENT_KEY, JSON.stringify(next));
+  const stored: Consent = {
+    ads: next.ads === true,
+    geo: next.ads === true && next.geo === true,
+    updatedAt: next.updatedAt,
+  };
+  window.localStorage.setItem(CONSENT_KEY, JSON.stringify(stored));
   window.dispatchEvent(new CustomEvent("desk-consent"));
 }

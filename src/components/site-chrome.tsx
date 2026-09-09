@@ -1,7 +1,7 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { Menu, X } from "lucide-react";
-import { SISTER_SITES } from "@/lib/catalog";
+import { CASH_APP_HANDLE, CASH_APP_URL, SISTER_SITES } from "@/lib/catalog";
 import { cn } from "@/lib/utils";
 
 const NAV = [
@@ -117,6 +117,7 @@ export function SiteChrome({ children }: { children: ReactNode }) {
             <p className="mt-2 max-w-md text-sm leading-relaxed text-muted">
               Published investigations and the reporting record behind them. Not
               legal advice. Not a product pitch. Ads stay off unless you opt in.
+              Default support is Buy me a coffee via Cash App ${CASH_APP_HANDLE}.
             </p>
           </div>
           <div className="flex flex-col gap-2 text-sm">
@@ -134,6 +135,9 @@ export function SiteChrome({ children }: { children: ReactNode }) {
                 {site.title}
               </a>
             ))}
+            <a href={CASH_APP_URL} className="text-ink hover:underline">
+              Cash App ${CASH_APP_HANDLE}
+            </a>
           </div>
         </div>
       </footer>

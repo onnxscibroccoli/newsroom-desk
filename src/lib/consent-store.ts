@@ -18,9 +18,12 @@ export function useConsent() {
   }, []);
 
   function update(partial: Partial<Consent>) {
+    const ads = partial.ads ?? consent.ads;
     const next: Consent = {
       ...consent,
       ...partial,
+      ads,
+      geo: ads ? (partial.geo ?? consent.geo) : false,
       updatedAt: new Date().toISOString(),
     };
     writeConsent(next);

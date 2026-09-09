@@ -21,6 +21,10 @@ export function RelatedStories({
         <p className="font-sans text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-slate">
           Also from the desk
         </p>
+        <p className="mt-2 max-w-2xl text-sm text-muted">
+          Every live piece back-links the others. Nothing here upgrades a hypothesis
+          into a finding.
+        </p>
         <div className="mt-5 grid gap-4 md:grid-cols-3">
           {related.map((article) => (
             <Link

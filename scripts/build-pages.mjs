@@ -7,6 +7,9 @@ const out = join(root, "docs");
 
 const CASH = "https://cash.app/$icoss";
 const HALF = "https://half-a-mile.vercel.app";
+const LIVE = "https://newsroom-desk.vercel.app";
+const PAGES = "https://onnxscibroccoli.github.io/desk";
+const GITHUB = "https://github.com/onnxscibroccoli/newsroom-desk";
 
 const ARTICLES = [
   {
@@ -148,6 +151,7 @@ function related(prefix, except) {
   return `<section class="border-t border-rule py-12">
     <div class="mx-auto max-w-6xl px-4 sm:px-6">
       <p class="font-sans text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-slate">Also from the desk</p>
+      <p class="mt-2 max-w-2xl text-sm text-muted">Every live piece back-links the others. Nothing here upgrades a hypothesis into a finding.</p>
       <div class="mt-5 grid gap-4 md:grid-cols-3">
         ${cards}
         <a href="${HALF}" class="rounded-md border border-rule p-5 hover:bg-paper-2">
@@ -498,6 +502,7 @@ writeFileSync(
       <p class="font-sans text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-slate">Reporting record · 9 September 2026</p>
       <h1 class="mt-3 font-display text-4xl font-semibold">Stories 4, 5, and 6 are live</h1>
       <p class="mt-5 font-display text-xl leading-snug text-muted">This record is the graded evidence behind the edition. Published copy uses only verified statute, agency, bureau, and Android documentation. Hypotheses stay hypotheses. Every live piece is linked here.</p>
+      <p class="mt-6 text-sm leading-relaxed text-muted">Live: <a class="text-ink underline" href="${LIVE}">newsroom-desk.vercel.app</a> · <a class="text-ink underline" href="${PAGES}">static pages</a> · <a class="text-ink underline" href="${GITHUB}">source</a>.</p>
       <p class="mt-8 font-sans text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-slate">Live this edition</p>
       <ul class="mt-4 grid gap-3">
         ${ARTICLES.map(

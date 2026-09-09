@@ -1,12 +1,17 @@
 export const CASH_APP_HANDLE = "icoss";
 export const CASH_APP_URL = "https://cash.app/$icoss";
 
+export const DESK_LIVE = "https://newsroom-desk.vercel.app";
+export const DESK_PAGES = "https://onnxscibroccoli.github.io/desk";
+export const DESK_GITHUB = "https://github.com/onnxscibroccoli/newsroom-desk";
+
 export const SISTER_SITES = [
   {
     slug: "half-a-mile",
     title: "Half a Mile",
     dek: "A five-year-old walked to a neighborhood pond. Virginia made it a crime.",
     href: "https://half-a-mile.vercel.app",
+    pages: "https://onnxscibroccoli.github.io/",
     date: "2026-09-09",
   },
 ] as const;

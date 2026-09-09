@@ -5,8 +5,9 @@ import { DeskShell, Section } from "@/components/desk-shell";
 import { GradeBadge } from "@/components/grade";
 import { QuotePull } from "@/components/quote-pull";
 import { RelatedStories } from "@/components/related-stories";
+import { SupportSlot } from "@/components/support-slot";
 import { ARTICLES } from "@/lib/articles";
-import { CASH_APP_HANDLE, CASH_APP_URL, SISTER_SITES } from "@/lib/catalog";
+import { CASH_APP_HANDLE, CASH_APP_URL, DESK_GITHUB, DESK_LIVE, DESK_PAGES, SISTER_SITES } from "@/lib/catalog";
 import {
   CHANNELS,
   CONTRADICTIONS,
@@ -52,6 +53,9 @@ function RecordPage() {
         <Reporting />
         <Claims />
         <Sources />
+        <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
+          <SupportSlot />
+        </div>
       </DeskShell>
       <RelatedStories />
     </SiteChrome>
@@ -83,6 +87,21 @@ function Cover() {
               Support and ads
             </Link>
             .
+          </p>
+          <p className="mt-4 max-w-xl text-sm leading-relaxed text-muted">
+            Live:{" "}
+            <a href={DESK_LIVE} className="text-ink underline decoration-rule underline-offset-2">
+              {DESK_LIVE.replace("https://", "")}
+            </a>
+            {" · "}
+            <a href={DESK_PAGES} className="text-ink underline decoration-rule underline-offset-2">
+              static pages
+            </a>
+            {" · "}
+            <a href={DESK_GITHUB} className="text-ink underline decoration-rule underline-offset-2">
+              source
+            </a>
+            . Every published story back-links the others.
           </p>
         </div>
         <ul className="grid gap-3">

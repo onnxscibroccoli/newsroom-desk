@@ -5,10 +5,11 @@ Published investigations 4, 5, and 6 — credit-report rights, Android accessibi
 ## Live
 
 - **Public site (Vercel):** [https://newsroom-desk.vercel.app](https://newsroom-desk.vercel.app)
+- **Static pages:** [https://onnxscibroccoli.github.io/desk](https://onnxscibroccoli.github.io/desk)
 - **GitHub:** [https://github.com/onnxscibroccoli/newsroom-desk](https://github.com/onnxscibroccoli/newsroom-desk)
-- **Sister essay:** [Half a Mile](https://half-a-mile.vercel.app)
+- **Sister essay:** [Half a Mile](https://half-a-mile.vercel.app) · [GitHub Pages](https://onnxscibroccoli.github.io/)
 
-Both public URLs serve the `docs/` snapshot. Vercel is production.
+Both public URLs serve the `docs/` snapshot. Vercel is production. Every published story back-links the others; the record lists them all.
 
 ## Edition
 
@@ -24,7 +25,7 @@ Ads stay **off** unless the reader opts in. The default slot is Buy me a coffee 
 
 ## Stack
 
-`src/` is React 19 + TanStack Start + Tailwind v4. `docs/` is the static snapshot for Vercel.
+`src/` is React 19 + TanStack Start + Tailwind v4. `docs/` is the static snapshot for Vercel and GitHub Pages.
 
 ```bash
 npm install
