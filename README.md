@@ -15,7 +15,8 @@ Both public URLs serve the `docs/` snapshot. Vercel is production.
 - [Your credit-report rights are free. The receipt is not.](https://newsroom-desk.vercel.app/story/the-cost-of-proving-youre-right/)
 - [Android can see the button. It cannot finish the form.](https://newsroom-desk.vercel.app/story/android-can-see-the-button/)
 - [Google built background phone control — for Google](https://newsroom-desk.vercel.app/story/the-invisible-phone/)
-- [The record](https://newsroom-desk.vercel.app/record/)
+- [The record](https://newsroom-desk.vercel.app/record/) — every live story is linked here
+- [Support and ads](https://newsroom-desk.vercel.app/privacy/)
 
 ## Support
 

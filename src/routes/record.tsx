@@ -1,10 +1,12 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Ban, Check, FileText, ShieldAlert } from "lucide-react";
 import { SiteChrome } from "@/components/site-chrome";
 import { DeskShell, Section } from "@/components/desk-shell";
 import { GradeBadge } from "@/components/grade";
 import { QuotePull } from "@/components/quote-pull";
 import { RelatedStories } from "@/components/related-stories";
+import { ARTICLES } from "@/lib/articles";
+import { CASH_APP_HANDLE, CASH_APP_URL, SISTER_SITES } from "@/lib/catalog";
 import {
   CHANNELS,
   CONTRADICTIONS,
@@ -59,7 +61,7 @@ function RecordPage() {
 function Cover() {
   return (
     <section className="border-b border-rule">
-      <div className="mx-auto grid max-w-6xl gap-10 px-4 py-14 sm:px-6 sm:py-20 lg:grid-cols-[1.4fr_0.8fr] lg:items-end">
+      <div className="mx-auto grid max-w-6xl gap-10 px-4 py-14 sm:px-6 sm:py-20 lg:grid-cols-[1.15fr_0.85fr] lg:items-start">
         <div>
           <p className="font-sans text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-slate">
             Reporting record · updated 9 September 2026
@@ -68,26 +70,71 @@ function Cover() {
             The cost of digital autonomy
           </h1>
           <p className="mt-6 max-w-xl font-display text-xl leading-snug text-muted">
-            Stories 4, 5, and 6 are live on the edition page. This record is the
-            graded evidence, the unknowns, and the lines that still may not run.
+            Stories 4, 5, and 6 are live. This record is the graded evidence, the
+            unknowns, and the lines that still may not run.
+          </p>
+          <p className="mt-6 max-w-xl text-sm leading-relaxed text-muted">
+            Ads stay off unless you opt in. Buy me a coffee via{" "}
+            <a href={CASH_APP_URL} className="text-ink underline decoration-rule underline-offset-2">
+              Cash App ${CASH_APP_HANDLE}
+            </a>
+            . South Shore house ads for Jules Gutter Cleaning are ready if you opt in.{" "}
+            <Link to="/privacy" className="text-ink underline decoration-rule underline-offset-2">
+              Support and ads
+            </Link>
+            .
           </p>
         </div>
-        <dl className="grid grid-cols-3 gap-3 border-t border-rule pt-6 lg:border-t-0 lg:pt-0">
-          <Stat n="4" label="Human / system" />
-          <Stat n="5" label="Phone / a11y" />
-          <Stat n="6" label="Platform" />
-        </dl>
+        <ul className="grid gap-3">
+          {ARTICLES.map((article) => (
+            <li key={article.slug}>
+              <Link
+                to="/story/$slug"
+                params={{ slug: article.slug }}
+                className="block rounded-md border border-rule p-4 hover:bg-paper-2"
+              >
+                <span className="font-sans text-[0.7rem] uppercase tracking-[0.14em] text-slate">
+                  Story {article.story} · published
+                </span>
+                <span className="mt-1 block font-display text-lg font-semibold leading-snug">
+                  {article.title}
+                </span>
+              </Link>
+            </li>
+          ))}
+          {SISTER_SITES.map((site) => (
+            <li key={site.slug}>
+              <a
+                href={site.href}
+                className="block rounded-md border border-rule p-4 hover:bg-paper-2"
+              >
+                <span className="font-sans text-[0.7rem] uppercase tracking-[0.14em] text-slate">
+                  Sister site · live
+                </span>
+                <span className="mt-1 block font-display text-lg font-semibold leading-snug">
+                  {site.title}
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
   );
 }
 
-function Stat({ n, label }: { n: string; label: string }) {
+function PublishedLink({ story }: { story: "4" | "5" | "6" }) {
+  const article = ARTICLES.find((a) => a.story === story);
+  if (!article) return null;
   return (
-    <div>
-      <dt className="font-sans text-[0.65rem] uppercase tracking-[0.14em] text-muted">{label}</dt>
-      <dd className="font-display text-4xl font-semibold leading-none text-ink">{n}</dd>
-    </div>
+    <Link
+      to="/story/$slug"
+      params={{ slug: article.slug }}
+      className="mt-6 inline-flex min-h-11 items-center gap-2 rounded-sm bg-ink px-4 text-sm font-medium text-paper"
+    >
+      Read the published story
+      <ArrowRight className="size-4" />
+    </Link>
   );
 }
 
@@ -183,6 +230,7 @@ function StoryFour() {
         Do not begin by asserting that the system is inaccessible. Begin with
         channels, fees, documents, records, and time.
       </p>
+      <PublishedLink story="4" />
 
       <div className="mt-10 grid gap-6 lg:grid-cols-2">
         {QUOTES.slice(0, 2).map((q) => (
@@ -285,6 +333,7 @@ function StoryFive() {
         task completion remains constrained by permissions, app behavior, safety,
         and the lack of a provider-independent automation layer.
       </p>
+      <PublishedLink story="5" />
 
       <div className="mt-10 grid gap-6 lg:grid-cols-2">
         {QUOTES.slice(2, 3).map((q) => (
@@ -357,6 +406,7 @@ function StorySix() {
         user’s display. Computer Control is a privileged, screenshot-driven
         virtual device for the OEM assistant.
       </p>
+      <PublishedLink story="6" />
 
       <div className="mt-10">
         <QuotePull {...QUOTES[3]} />

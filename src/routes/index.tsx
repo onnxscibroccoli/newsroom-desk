@@ -82,7 +82,7 @@ function Edition() {
         </div>
       </section>
 
-      <RelatedStories includeSister slugs={[]} />
+      <RelatedStories />
     </SiteChrome>
   );
 }

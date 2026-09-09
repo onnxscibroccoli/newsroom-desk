@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Newsroom Desk — Edition</title>
-  <meta name="description" content="Published investigations on credit-report rights, Android accessibility, and background phone control." />
+  <meta name="description" content="Published investigations on credit-report rights, Android accessibility, and background phone control. Ads off unless you opt in." />
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -12,9 +12,10 @@
   <link rel="stylesheet" href="site.css" />
 </head>
 <body class="bg-paper text-ink">
-  <header class="sticky top-0 z-40 border-b border-rule bg-paper/95">
+  <a href="#main" class="skip">Skip to content</a>
+  <header class="sticky top-0 z-40 border-b border-rule bg-paper-95">
     <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
-      <a href="" class="flex min-h-11 items-center gap-3">
+      <a href="./" class="flex min-h-11 items-center gap-3">
         <span class="grid size-8 place-items-center rounded-xs bg-ink text-paper"><span class="font-display text-sm leading-none">N</span></span>
         <span>
           <span class="block font-display text-base font-semibold leading-tight">Newsroom Desk</span>
@@ -22,14 +23,23 @@
         </span>
       </a>
       <nav class="hidden items-center gap-1 md:flex" aria-label="Primary">
-        <a href="" class="inline-flex min-h-11 items-center rounded-sm px-3 text-sm font-medium bg-ink text-paper">Edition</a>
+        <a href="./" class="inline-flex min-h-11 items-center rounded-sm px-3 text-sm font-medium bg-ink text-paper">Edition</a>
         <a href="record/" class="inline-flex min-h-11 items-center rounded-sm px-3 text-sm font-medium text-muted">The record</a>
         <a href="privacy/" class="inline-flex min-h-11 items-center rounded-sm px-3 text-sm font-medium text-muted">Support</a>
         <a href="https://half-a-mile.vercel.app" class="inline-flex min-h-11 items-center rounded-sm px-3 text-sm font-medium text-muted">Half a Mile</a>
       </nav>
+      <details class="md:hidden">
+        <summary class="grid size-11 place-items-center rounded-sm border border-rule">Menu</summary>
+        <nav class="menu" aria-label="Mobile">
+          <a href="./">Edition</a>
+          <a href="record/">The record</a>
+          <a href="privacy/">Support</a>
+          <a href="https://half-a-mile.vercel.app">Half a Mile</a>
+        </nav>
+      </details>
     </div>
   </header>
-  <main>
+  <main id="main">
 <section class="border-b border-rule">
   <div class="mx-auto grid max-w-6xl gap-10 px-4 py-14 sm:px-6 sm:py-20 lg:grid-cols-[1.45fr_0.85fr] lg:items-end">
     <div>
@@ -38,7 +48,7 @@
       <p class="mt-6 max-w-xl font-display text-xl leading-snug text-muted">Federal law gives you a free reinvestigation, generally within 30 days. The agencies that police that right still tell you to buy a certified-mail receipt if you want proof the letter arrived.</p>
       <a href="story/the-cost-of-proving-youre-right/" class="mt-8 inline-flex min-h-11 items-center rounded-sm bg-ink px-4 text-sm font-medium text-paper">Read the story</a>
     </div>
-    <aside class="rounded-lg border border-rule bg-paper-2 p-5 sm:p-6" data-support>
+    <aside class="rounded-lg border border-rule bg-paper-2 p-5 sm:p-6" data-support data-privacy="privacy/">
   <p class="font-sans text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-slate">Keep the desk independent</p>
   <h2 class="mt-2 font-display text-2xl font-semibold">Buy me a coffee</h2>
   <p class="mt-2 max-w-xl text-sm leading-relaxed text-muted">Ads stay off unless you turn them on. Until then this slot is a tip jar — Cash App $icoss.</p>
@@ -63,7 +73,7 @@
         <p class="mt-3 text-sm leading-relaxed text-muted">Android can run apps the user is not looking at. The documented way to do it is not the accessibility tree. It is a privileged, screenshot-driven virtual device reserved for the OEM assistant.</p>
       </a>
     </div>
-    <p class="mt-8 text-sm text-muted">The graded evidence lives in <a href="record/" class="text-ink underline">the record</a>.</p>
+    <p class="mt-8 text-sm text-muted">The graded evidence lives in <a href="record/" class="text-ink underline">the record</a>. Every story back-links the others.</p>
   </div>
 </section>
 <section class="border-t border-rule py-12">
@@ -71,17 +81,20 @@
       <p class="font-sans text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-slate">Also from the desk</p>
       <div class="mt-5 grid gap-4 md:grid-cols-3">
         <a href="story/the-cost-of-proving-youre-right/" class="rounded-md border border-rule p-5 hover:bg-paper-2">
-      <p class="font-sans text-[0.7rem] uppercase tracking-[0.14em] text-slate">Story 4</p>
+      <p class="font-sans text-[0.7rem] uppercase tracking-[0.14em] text-slate">Story 4 · published</p>
       <h2 class="mt-2 font-display text-xl font-semibold leading-snug">Your credit-report rights are free. The receipt is not.</h2>
+      <p class="mt-2 text-sm leading-relaxed text-muted">Federal law gives you a free reinvestigation, generally within 30 days. The agencies that police that right still tell you to buy a certified-mail receipt if you want proof the letter arrived.</p>
     </a><a href="story/android-can-see-the-button/" class="rounded-md border border-rule p-5 hover:bg-paper-2">
-      <p class="font-sans text-[0.7rem] uppercase tracking-[0.14em] text-slate">Story 5</p>
+      <p class="font-sans text-[0.7rem] uppercase tracking-[0.14em] text-slate">Story 5 · published</p>
       <h2 class="mt-2 font-display text-xl font-semibold leading-snug">Android can see the button. It cannot finish the form.</h2>
+      <p class="mt-2 text-sm leading-relaxed text-muted">The accessibility APIs on an Android phone are real, documented, and powerful. They are not a license for an ordinary app to plan and tap its way through someone else’s life.</p>
     </a><a href="story/the-invisible-phone/" class="rounded-md border border-rule p-5 hover:bg-paper-2">
-      <p class="font-sans text-[0.7rem] uppercase tracking-[0.14em] text-slate">Story 6</p>
+      <p class="font-sans text-[0.7rem] uppercase tracking-[0.14em] text-slate">Story 6 · published</p>
       <h2 class="mt-2 font-display text-xl font-semibold leading-snug">Google built background phone control — for Google</h2>
+      <p class="mt-2 text-sm leading-relaxed text-muted">Android can run apps the user is not looking at. The documented way to do it is not the accessibility tree. It is a privileged, screenshot-driven virtual device reserved for the OEM assistant.</p>
     </a>
         <a href="https://half-a-mile.vercel.app" class="rounded-md border border-rule p-5 hover:bg-paper-2">
-          <p class="font-sans text-[0.7rem] uppercase tracking-[0.14em] text-slate">Sister site</p>
+          <p class="font-sans text-[0.7rem] uppercase tracking-[0.14em] text-slate">Sister site · live</p>
           <h2 class="mt-2 font-display text-xl font-semibold leading-snug">Half a Mile</h2>
           <p class="mt-2 text-sm text-muted">A five-year-old walked to a neighborhood pond. Virginia made it a crime.</p>
         </a>
@@ -96,7 +109,7 @@
         <p class="mt-2 max-w-md text-sm leading-relaxed text-muted">Published investigations and the reporting record behind them. Ads stay off unless you opt in. Buy me a coffee: Cash App $icoss.</p>
       </div>
       <div class="flex flex-col gap-2 text-sm">
-        <a href="" class="text-ink hover:underline">This edition</a>
+        <a href="./" class="text-ink hover:underline">This edition</a>
         <a href="record/" class="text-ink hover:underline">The record</a>
         <a href="privacy/" class="text-ink hover:underline">Support and ads</a>
         <a href="https://half-a-mile.vercel.app" class="text-ink hover:underline">Half a Mile</a>

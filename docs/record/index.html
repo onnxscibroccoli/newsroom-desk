@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>The record — Newsroom Desk</title>
-  <meta name="description" content="Reporting record for investigations 4, 5, and 6." />
+  <meta name="description" content="Reporting record for investigations 4, 5, and 6, with every published story linked." />
   <link rel="icon" type="image/svg+xml" href="../favicon.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -12,7 +12,8 @@
   <link rel="stylesheet" href="../site.css" />
 </head>
 <body class="bg-paper text-ink">
-  <header class="sticky top-0 z-40 border-b border-rule bg-paper/95">
+  <a href="#main" class="skip">Skip to content</a>
+  <header class="sticky top-0 z-40 border-b border-rule bg-paper-95">
     <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
       <a href="../" class="flex min-h-11 items-center gap-3">
         <span class="grid size-8 place-items-center rounded-xs bg-ink text-paper"><span class="font-display text-sm leading-none">N</span></span>
@@ -27,33 +28,50 @@
         <a href="../privacy/" class="inline-flex min-h-11 items-center rounded-sm px-3 text-sm font-medium text-muted">Support</a>
         <a href="https://half-a-mile.vercel.app" class="inline-flex min-h-11 items-center rounded-sm px-3 text-sm font-medium text-muted">Half a Mile</a>
       </nav>
+      <details class="md:hidden">
+        <summary class="grid size-11 place-items-center rounded-sm border border-rule">Menu</summary>
+        <nav class="menu" aria-label="Mobile">
+          <a href="../">Edition</a>
+          <a href="../record/">The record</a>
+          <a href="../privacy/">Support</a>
+          <a href="https://half-a-mile.vercel.app">Half a Mile</a>
+        </nav>
+      </details>
     </div>
   </header>
-  <main><div class="mx-auto max-w-3xl px-4 py-12 sm:px-6 sm:py-16">
+  <main id="main"><div class="mx-auto max-w-3xl px-4 py-12 sm:px-6 sm:py-16">
       <p class="font-sans text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-slate">Reporting record · 9 September 2026</p>
       <h1 class="mt-3 font-display text-4xl font-semibold">Stories 4, 5, and 6 are live</h1>
-      <p class="mt-5 font-display text-xl leading-snug text-muted">This record is the graded evidence behind the edition. Published copy uses only verified statute, agency, bureau, and Android documentation. Hypotheses stay hypotheses.</p>
-      <ul class="mt-8 space-y-4 text-sm leading-relaxed">
-        <li><a class="font-display text-lg text-ink underline decoration-rule" href="../story/the-cost-of-proving-youre-right/">Your credit-report rights are free. The receipt is not.</a> — published.</li><li><a class="font-display text-lg text-ink underline decoration-rule" href="../story/android-can-see-the-button/">Android can see the button. It cannot finish the form.</a> — published.</li><li><a class="font-display text-lg text-ink underline decoration-rule" href="../story/the-invisible-phone/">Google built background phone control — for Google</a> — published.</li>
-        <li><a class="font-display text-lg text-ink underline decoration-rule" href="https://half-a-mile.vercel.app">Half a Mile</a> — sister essay, also live.</li>
+      <p class="mt-5 font-display text-xl leading-snug text-muted">This record is the graded evidence behind the edition. Published copy uses only verified statute, agency, bureau, and Android documentation. Hypotheses stay hypotheses. Every live piece is linked here.</p>
+      <p class="mt-8 font-sans text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-slate">Live this edition</p>
+      <ul class="mt-4 grid gap-3">
+        <li><a class="block rounded-md border border-rule p-4 hover:bg-paper-2" href="../story/the-cost-of-proving-youre-right/"><span class="font-sans text-[0.7rem] uppercase tracking-[0.14em] text-slate">Story 4 · published</span><span class="mt-1 block font-display text-lg font-semibold leading-snug">Your credit-report rights are free. The receipt is not.</span></a></li><li><a class="block rounded-md border border-rule p-4 hover:bg-paper-2" href="../story/android-can-see-the-button/"><span class="font-sans text-[0.7rem] uppercase tracking-[0.14em] text-slate">Story 5 · published</span><span class="mt-1 block font-display text-lg font-semibold leading-snug">Android can see the button. It cannot finish the form.</span></a></li><li><a class="block rounded-md border border-rule p-4 hover:bg-paper-2" href="../story/the-invisible-phone/"><span class="font-sans text-[0.7rem] uppercase tracking-[0.14em] text-slate">Story 6 · published</span><span class="mt-1 block font-display text-lg font-semibold leading-snug">Google built background phone control — for Google</span></a></li>
+        <li><a class="block rounded-md border border-rule p-4 hover:bg-paper-2" href="https://half-a-mile.vercel.app"><span class="font-sans text-[0.7rem] uppercase tracking-[0.14em] text-slate">Sister site · live</span><span class="mt-1 block font-display text-lg font-semibold leading-snug">Half a Mile</span></a></li>
       </ul>
-      <p class="mt-8 text-sm text-muted">Do not publish: disparate-impact findings, “bureaus refuse email to evade FCRA,” Broccoli as proof, FLAG_SECURE as an accessibility kill-switch, or Computer Control as a third-party app API.</p>
+      <p class="mt-8 text-sm leading-relaxed text-muted">Ads stay off unless you opt in. Buy me a coffee: <a class="text-ink underline" href="https://cash.app/$icoss">Cash App $icoss</a>. South Shore house ads for Jules Gutter Cleaning are ready if you opt in. <a class="text-ink underline" href="../privacy/">Support and ads</a>.</p>
+      <h2 class="mt-12 font-display text-2xl font-semibold">Do not publish yet</h2>
+      <ol class="mt-4 space-y-3 text-sm leading-relaxed">
+        <li>1. Disparate-impact findings about disabled consumers (hypothesis).</li><li>2. “The bureaus refuse email to evade FCRA.”</li><li>3. “Online disputes are fake.”</li><li>4. “Certified mail is required.” (Recommended, not statutory.)</li><li>5. Broccoli as proof a disabled user can complete a dispute.</li><li>6. “Just enable AccessibilityService and an AI can use your phone.”</li><li>7. FLAG_SECURE as an accessibility kill-switch.</li><li>8. Computer Control as a third-party app API.</li>
+      </ol>
     </div><section class="border-t border-rule py-12">
     <div class="mx-auto max-w-6xl px-4 sm:px-6">
       <p class="font-sans text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-slate">Also from the desk</p>
       <div class="mt-5 grid gap-4 md:grid-cols-3">
         <a href="../story/the-cost-of-proving-youre-right/" class="rounded-md border border-rule p-5 hover:bg-paper-2">
-      <p class="font-sans text-[0.7rem] uppercase tracking-[0.14em] text-slate">Story 4</p>
+      <p class="font-sans text-[0.7rem] uppercase tracking-[0.14em] text-slate">Story 4 · published</p>
       <h2 class="mt-2 font-display text-xl font-semibold leading-snug">Your credit-report rights are free. The receipt is not.</h2>
+      <p class="mt-2 text-sm leading-relaxed text-muted">Federal law gives you a free reinvestigation, generally within 30 days. The agencies that police that right still tell you to buy a certified-mail receipt if you want proof the letter arrived.</p>
     </a><a href="../story/android-can-see-the-button/" class="rounded-md border border-rule p-5 hover:bg-paper-2">
-      <p class="font-sans text-[0.7rem] uppercase tracking-[0.14em] text-slate">Story 5</p>
+      <p class="font-sans text-[0.7rem] uppercase tracking-[0.14em] text-slate">Story 5 · published</p>
       <h2 class="mt-2 font-display text-xl font-semibold leading-snug">Android can see the button. It cannot finish the form.</h2>
+      <p class="mt-2 text-sm leading-relaxed text-muted">The accessibility APIs on an Android phone are real, documented, and powerful. They are not a license for an ordinary app to plan and tap its way through someone else’s life.</p>
     </a><a href="../story/the-invisible-phone/" class="rounded-md border border-rule p-5 hover:bg-paper-2">
-      <p class="font-sans text-[0.7rem] uppercase tracking-[0.14em] text-slate">Story 6</p>
+      <p class="font-sans text-[0.7rem] uppercase tracking-[0.14em] text-slate">Story 6 · published</p>
       <h2 class="mt-2 font-display text-xl font-semibold leading-snug">Google built background phone control — for Google</h2>
+      <p class="mt-2 text-sm leading-relaxed text-muted">Android can run apps the user is not looking at. The documented way to do it is not the accessibility tree. It is a privileged, screenshot-driven virtual device reserved for the OEM assistant.</p>
     </a>
         <a href="https://half-a-mile.vercel.app" class="rounded-md border border-rule p-5 hover:bg-paper-2">
-          <p class="font-sans text-[0.7rem] uppercase tracking-[0.14em] text-slate">Sister site</p>
+          <p class="font-sans text-[0.7rem] uppercase tracking-[0.14em] text-slate">Sister site · live</p>
           <h2 class="mt-2 font-display text-xl font-semibold leading-snug">Half a Mile</h2>
           <p class="mt-2 text-sm text-muted">A five-year-old walked to a neighborhood pond. Virginia made it a crime.</p>
         </a>

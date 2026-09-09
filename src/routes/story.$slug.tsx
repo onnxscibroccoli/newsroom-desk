@@ -76,7 +76,7 @@ function StoryPage() {
           </div>
         </div>
       </article>
-      <RelatedStories slugs={article.related} />
+      <RelatedStories except={article.slug} />
     </SiteChrome>
   );
 }

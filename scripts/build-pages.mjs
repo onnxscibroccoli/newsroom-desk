@@ -1,4 +1,4 @@
-import { mkdirSync, writeFileSync, copyFileSync, readFileSync, readdirSync } from "node:fs";
+import { mkdirSync, writeFileSync, copyFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -32,6 +32,17 @@ const ARTICLES = [
   },
 ];
 
+const DO_NOT_PUBLISH = [
+  "Disparate-impact findings about disabled consumers (hypothesis).",
+  "“The bureaus refuse email to evade FCRA.”",
+  "“Online disputes are fake.”",
+  "“Certified mail is required.” (Recommended, not statutory.)",
+  "Broccoli as proof a disabled user can complete a dispute.",
+  "“Just enable AccessibilityService and an AI can use your phone.”",
+  "FLAG_SECURE as an accessibility kill-switch.",
+  "Computer Control as a third-party app API.",
+];
+
 function escapeHtml(s) {
   return s.replace(/[&<>"']/g, (c) => {
     if (c === "&") return "&" + "amp;";
@@ -44,9 +55,11 @@ function escapeHtml(s) {
 
 function chrome({ title, description, prefix, active, body }) {
   const css = `${prefix}site.css`;
-  const home = `${prefix}`;
+  const home = prefix === "" ? "./" : prefix;
   const record = `${prefix}record/`;
   const privacy = `${prefix}privacy/`;
+  const navLink = (href, id, label) =>
+    `<a href="${href}" class="inline-flex min-h-11 items-center rounded-sm px-3 text-sm font-medium ${active === id ? "bg-ink text-paper" : "text-muted"}">${label}</a>`;
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -61,7 +74,8 @@ function chrome({ title, description, prefix, active, body }) {
   <link rel="stylesheet" href="${css}" />
 </head>
 <body class="bg-paper text-ink">
-  <header class="sticky top-0 z-40 border-b border-rule bg-paper/95">
+  <a href="#main" class="skip">Skip to content</a>
+  <header class="sticky top-0 z-40 border-b border-rule bg-paper-95">
     <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
       <a href="${home}" class="flex min-h-11 items-center gap-3">
         <span class="grid size-8 place-items-center rounded-xs bg-ink text-paper"><span class="font-display text-sm leading-none">N</span></span>
@@ -71,14 +85,23 @@ function chrome({ title, description, prefix, active, body }) {
         </span>
       </a>
       <nav class="hidden items-center gap-1 md:flex" aria-label="Primary">
-        <a href="${home}" class="inline-flex min-h-11 items-center rounded-sm px-3 text-sm font-medium ${active === "edition" ? "bg-ink text-paper" : "text-muted"}">Edition</a>
-        <a href="${record}" class="inline-flex min-h-11 items-center rounded-sm px-3 text-sm font-medium ${active === "record" ? "bg-ink text-paper" : "text-muted"}">The record</a>
-        <a href="${privacy}" class="inline-flex min-h-11 items-center rounded-sm px-3 text-sm font-medium ${active === "privacy" ? "bg-ink text-paper" : "text-muted"}">Support</a>
+        ${navLink(home, "edition", "Edition")}
+        ${navLink(record, "record", "The record")}
+        ${navLink(privacy, "privacy", "Support")}
         <a href="${HALF}" class="inline-flex min-h-11 items-center rounded-sm px-3 text-sm font-medium text-muted">Half a Mile</a>
       </nav>
+      <details class="md:hidden">
+        <summary class="grid size-11 place-items-center rounded-sm border border-rule">Menu</summary>
+        <nav class="menu" aria-label="Mobile">
+          <a href="${home}">Edition</a>
+          <a href="${record}">The record</a>
+          <a href="${privacy}">Support</a>
+          <a href="${HALF}">Half a Mile</a>
+        </nav>
+      </details>
     </div>
   </header>
-  <main>${body}</main>
+  <main id="main">${body}</main>
   <footer class="border-t border-rule">
     <div class="mx-auto grid max-w-6xl gap-8 px-4 py-10 sm:px-6 md:grid-cols-2">
       <div>
@@ -100,14 +123,14 @@ function chrome({ title, description, prefix, active, body }) {
 `;
 }
 
-function supportBox() {
-  return `<aside class="rounded-lg border border-rule bg-paper-2 p-5 sm:p-6" data-support>
+function supportBox(privacyHref) {
+  return `<aside class="rounded-lg border border-rule bg-paper-2 p-5 sm:p-6" data-support data-privacy="${privacyHref}">
   <p class="font-sans text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-slate">Keep the desk independent</p>
   <h2 class="mt-2 font-display text-2xl font-semibold">Buy me a coffee</h2>
   <p class="mt-2 max-w-xl text-sm leading-relaxed text-muted">Ads stay off unless you turn them on. Until then this slot is a tip jar — Cash App $icoss.</p>
   <div class="mt-4 flex flex-wrap gap-2">
     <a href="${CASH}" class="inline-flex min-h-11 items-center rounded-sm bg-ink px-4 text-sm font-medium text-paper">Cash App $icoss</a>
-    <a href="./privacy/" class="inline-flex min-h-11 items-center rounded-sm border border-rule px-4 text-sm font-medium text-ink">Ads settings</a>
+    <a href="${privacyHref}" class="inline-flex min-h-11 items-center rounded-sm border border-rule px-4 text-sm font-medium text-ink">Ads settings</a>
   </div>
 </aside>`;
 }
@@ -116,8 +139,9 @@ function related(prefix, except) {
   const cards = ARTICLES.filter((a) => a.slug !== except)
     .map(
       (a) => `<a href="${prefix}story/${a.slug}/" class="rounded-md border border-rule p-5 hover:bg-paper-2">
-      <p class="font-sans text-[0.7rem] uppercase tracking-[0.14em] text-slate">Story ${a.story}</p>
+      <p class="font-sans text-[0.7rem] uppercase tracking-[0.14em] text-slate">Story ${a.story} · published</p>
       <h2 class="mt-2 font-display text-xl font-semibold leading-snug">${escapeHtml(a.title)}</h2>
+      <p class="mt-2 text-sm leading-relaxed text-muted">${escapeHtml(a.dek)}</p>
     </a>`,
     )
     .join("");
@@ -127,7 +151,7 @@ function related(prefix, except) {
       <div class="mt-5 grid gap-4 md:grid-cols-3">
         ${cards}
         <a href="${HALF}" class="rounded-md border border-rule p-5 hover:bg-paper-2">
-          <p class="font-sans text-[0.7rem] uppercase tracking-[0.14em] text-slate">Sister site</p>
+          <p class="font-sans text-[0.7rem] uppercase tracking-[0.14em] text-slate">Sister site · live</p>
           <h2 class="mt-2 font-display text-xl font-semibold leading-snug">Half a Mile</h2>
           <p class="mt-2 text-sm text-muted">A five-year-old walked to a neighborhood pond. Virginia made it a crime.</p>
         </a>
@@ -135,6 +159,246 @@ function related(prefix, except) {
     </div>
   </section>`;
 }
+
+const SITE_CSS = `:root {
+  --paper: #f4f0e8;
+  --paper-2: #ebe6dc;
+  --ink: #1c1916;
+  --muted: #6f6a63;
+  --rule: #d4cdc2;
+  --slate: #3d4a55;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--paper); color: var(--ink); }
+body { font-family: "Public Sans", "Segoe UI", system-ui, sans-serif; line-height: 1.55; }
+h1, h2, h3, .font-display { font-family: "Newsreader", Palatino, serif; letter-spacing: -0.02em; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; cursor: pointer; }
+.skip { position: absolute; left: -999px; }
+.skip:focus { left: 1rem; top: 1rem; z-index: 50; background: var(--ink); color: var(--paper); padding: 0.5rem 0.75rem; }
+.bg-paper { background: var(--paper); }
+.bg-paper-2 { background: var(--paper-2); }
+.bg-paper-95 { background: color-mix(in oklab, var(--paper) 95%, transparent); }
+.bg-ink { background: var(--ink); }
+.text-ink { color: var(--ink); }
+.text-muted { color: var(--muted); }
+.text-paper { color: var(--paper); }
+.text-slate { color: var(--slate); }
+.border-rule { border-color: var(--rule); }
+.border-ink { border-color: var(--ink); }
+.border { border: 1px solid var(--rule); }
+.border-t { border-top: 1px solid var(--rule); }
+.border-b { border-bottom: 1px solid var(--rule); }
+.border-l-2 { border-left: 2px solid var(--ink); }
+.sticky { position: sticky; }
+.top-0 { top: 0; }
+.z-40 { z-index: 40; }
+.mx-auto { margin-left: auto; margin-right: auto; }
+.max-w-6xl { max-width: 72rem; }
+.max-w-3xl { max-width: 48rem; }
+.max-w-xl { max-width: 36rem; }
+.max-w-md { max-width: 28rem; }
+.px-3 { padding-left: 0.75rem; padding-right: 0.75rem; }
+.px-4 { padding-left: 1rem; padding-right: 1rem; }
+.py-3 { padding-top: 0.75rem; padding-bottom: 0.75rem; }
+.py-10 { padding-top: 2.5rem; padding-bottom: 2.5rem; }
+.py-12 { padding-top: 3rem; padding-bottom: 3rem; }
+.py-14 { padding-top: 3.5rem; padding-bottom: 3.5rem; }
+.p-4 { padding: 1rem; }
+.p-5 { padding: 1.25rem; }
+.p-6 { padding: 1.5rem; }
+.pt-4 { padding-top: 1rem; }
+.pt-8 { padding-top: 2rem; }
+.pb-14 { padding-bottom: 3.5rem; }
+.pb-16 { padding-bottom: 4rem; }
+.pl-5 { padding-left: 1.25rem; }
+.mb-2 { margin-bottom: 0.5rem; }
+.mt-1 { margin-top: 0.25rem; }
+.mt-2 { margin-top: 0.5rem; }
+.mt-3 { margin-top: 0.75rem; }
+.mt-4 { margin-top: 1rem; }
+.mt-5 { margin-top: 1.25rem; }
+.mt-6 { margin-top: 1.5rem; }
+.mt-8 { margin-top: 2rem; }
+.mt-10 { margin-top: 2.5rem; }
+.mt-12 { margin-top: 3rem; }
+.flex { display: flex; }
+.grid { display: grid; }
+.inline-flex { display: inline-flex; }
+.block { display: block; }
+.hidden { display: none; }
+.items-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.gap-1 { gap: 0.25rem; }
+.gap-2 { gap: 0.5rem; }
+.gap-3 { gap: 0.75rem; }
+.gap-4 { gap: 1rem; }
+.gap-8 { gap: 2rem; }
+.gap-10 { gap: 2.5rem; }
+.flex-col { flex-direction: column; }
+.flex-wrap { flex-wrap: wrap; }
+.min-h-11 { min-height: 2.75rem; }
+.size-8 { width: 2rem; height: 2rem; }
+.size-11 { width: 2.75rem; height: 2.75rem; }
+.place-items-center { display: grid; place-items: center; }
+.rounded-xs { border-radius: 4px; }
+.rounded-sm { border-radius: 8px; }
+.rounded-md { border-radius: 12px; }
+.rounded-lg { border-radius: 20px; }
+.text-sm { font-size: 0.875rem; }
+.text-xs { font-size: 0.75rem; }
+.text-base { font-size: 1rem; }
+.text-lg { font-size: 1.125rem; }
+.text-xl { font-size: 1.25rem; }
+.text-2xl { font-size: 1.5rem; }
+.text-4xl { font-size: 2.25rem; }
+.text-[0.7rem] { font-size: 0.7rem; }
+.text-[0.72rem] { font-size: 0.72rem; }
+.text-[2.6rem] { font-size: 2.6rem; }
+.font-semibold { font-weight: 600; }
+.font-medium { font-weight: 500; }
+.uppercase { text-transform: uppercase; }
+.tracking-[0.14em] { letter-spacing: 0.14em; }
+.tracking-[0.16em] { letter-spacing: 0.16em; }
+.tracking-[0.2em] { letter-spacing: 0.2em; }
+.leading-tight { line-height: 1.25; }
+.leading-snug { line-height: 1.375; }
+.leading-relaxed { line-height: 1.625; }
+.leading-none { line-height: 1; }
+.leading-[1.1] { line-height: 1.1; }
+.leading-[1.08] { line-height: 1.08; }
+.underline { text-decoration: underline; }
+.decoration-rule { text-decoration-color: var(--rule); }
+.underline-offset-2 { text-underline-offset: 2px; }
+.hover\\:underline:hover { text-decoration: underline; }
+.hover\\:bg-paper-2:hover { background: var(--paper-2); }
+.space-y-3 > * + * { margin-top: 0.75rem; }
+.space-y-4 > * + * { margin-top: 1rem; }
+.space-y-6 > * + * { margin-top: 1.5rem; }
+.font-sans { font-family: "Public Sans", "Segoe UI", system-ui, sans-serif; }
+.font-display { font-family: "Newsreader", Palatino, serif; }
+details { position: relative; }
+details summary { list-style: none; }
+details summary::-webkit-details-marker { display: none; }
+.menu { position: absolute; right: 1rem; margin-top: 0.5rem; display: grid; min-width: 12rem; gap: 0.25rem; border: 1px solid var(--rule); background: var(--paper); padding: 0.5rem; border-radius: 8px; }
+.menu a { min-height: 2.75rem; display: flex; align-items: center; padding: 0 0.75rem; }
+label.row { display: flex; align-items: center; gap: 0.75rem; min-height: 2.75rem; font-size: 0.875rem; }
+@media (min-width: 40rem) {
+  .sm\\:px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
+  .sm\\:py-16 { padding-top: 4rem; padding-bottom: 4rem; }
+  .sm\\:py-20 { padding-top: 5rem; padding-bottom: 5rem; }
+  .sm\\:p-6 { padding: 1.5rem; }
+  .sm\\:text-5xl { font-size: 3rem; }
+  .sm\\:text-6xl { font-size: 3.75rem; }
+}
+@media (min-width: 48rem) {
+  .md\\:flex { display: flex; }
+  .md\\:hidden { display: none; }
+  .md\\:grid-cols-2 { grid-template-columns: 1fr 1fr; }
+  .md\\:grid-cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+}
+@media (min-width: 64rem) {
+  .lg\\:grid-cols-\\[1\\.45fr_0\\.85fr\\] { grid-template-columns: 1.45fr 0.85fr; }
+  .lg\\:items-end { align-items: end; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
+`;
+
+const CONSENT_JS = `(() => {
+  const KEY = "newsroom-desk-consent-v1";
+  const CASH = "https://cash.app/$icoss";
+  const BOX = { minLat: 41.98, maxLat: 42.32, minLng: -71.12, maxLng: -70.64 };
+  function inSouthShore(lat, lng) {
+    return lat >= BOX.minLat && lat <= BOX.maxLat && lng >= BOX.minLng && lng <= BOX.maxLng;
+  }
+  function read() {
+    try {
+      const parsed = JSON.parse(localStorage.getItem(KEY) || "{}");
+      return { ads: parsed.ads === true, geo: parsed.geo === true, updatedAt: parsed.updatedAt || "" };
+    } catch {
+      return { ads: false, geo: false, updatedAt: "" };
+    }
+  }
+  function write(partial) {
+    const next = { ...read(), ...partial, updatedAt: new Date().toISOString() };
+    if (!next.ads) next.geo = false;
+    localStorage.setItem(KEY, JSON.stringify(next));
+    window.dispatchEvent(new CustomEvent("desk-consent"));
+    return next;
+  }
+  function coffee(privacy, consent, geo) {
+    const note = consent.ads
+      ? (consent.geo
+          ? (geo === "elsewhere"
+              ? "House ads for Jules Gutter Cleaning are geo-fenced to the South Shore. This device is outside that fence, so you still see the tip jar."
+              : "Ads are on. Local South Shore ads load only if this device is inside the fence.")
+          : "Ads are on, but location is off. Local South Shore ads will not load without it.")
+      : "Future ads, if you opt in, can be geo-fenced to the South Shore for Jules Gutter Cleaning. No ad network loads until you say so.";
+    return \`
+      <p class="font-sans text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-slate">Keep the desk independent</p>
+      <h2 class="mt-2 font-display text-2xl font-semibold">Buy me a coffee</h2>
+      <p class="mt-2 max-w-xl text-sm leading-relaxed text-muted">Ads stay off unless you turn them on. Until then this slot is a tip jar — Cash App $icoss.</p>
+      <div class="mt-4 flex flex-wrap gap-2">
+        <a href="\${CASH}" class="inline-flex min-h-11 items-center rounded-sm bg-ink px-4 text-sm font-medium text-paper">Cash App $icoss</a>
+        \${consent.ads ? "" : '<button type="button" data-opt-in-ads class="inline-flex min-h-11 items-center rounded-sm border border-rule px-4 text-sm font-medium text-ink">Opt in to ads</button>'}
+        <a href="\${privacy}" class="inline-flex min-h-11 items-center rounded-sm border border-rule px-4 text-sm font-medium text-ink">Ads settings</a>
+      </div>
+      <p class="mt-3 text-xs text-muted">\${note} <a href="\${privacy}" class="underline">How this works</a>.</p>
+    \`;
+  }
+  function jules(privacy) {
+    return \`
+      <p class="font-sans text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-slate">South Shore · house ad</p>
+      <h2 class="mt-2 font-display text-2xl font-semibold">Jules Gutter Cleaning</h2>
+      <p class="mt-2 text-sm leading-relaxed text-muted">Gutters cleared. Downspouts flowing. South Shore Massachusetts.</p>
+      <a href="\${CASH}" class="mt-4 inline-flex min-h-11 items-center rounded-sm bg-ink px-4 text-sm font-medium text-paper">Pay or tip on Cash App $icoss</a>
+      <p class="mt-3 text-xs text-muted">Shown because you opted into ads and this device looks like South Shore Massachusetts. <a href="\${privacy}" class="underline">Change this</a>.</p>
+    \`;
+  }
+  function renderSlots(consent, geo) {
+    document.querySelectorAll("[data-support]").forEach((el) => {
+      const privacy = el.getAttribute("data-privacy") || "privacy/";
+      el.innerHTML = consent.ads && geo === "south-shore" ? jules(privacy) : coffee(privacy, consent, geo);
+    });
+  }
+  function syncForm(consent) {
+    const ads = document.querySelector("[data-ads-toggle]");
+    const geo = document.querySelector("[data-geo-toggle]");
+    if (ads) ads.checked = consent.ads;
+    if (geo) {
+      geo.checked = consent.geo;
+      geo.disabled = !consent.ads;
+    }
+  }
+  function locateAndPaint() {
+    const consent = read();
+    syncForm(consent);
+    if (!consent.ads || !consent.geo || !navigator.geolocation) {
+      renderSlots(consent, "unknown");
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        renderSlots(consent, inSouthShore(pos.coords.latitude, pos.coords.longitude) ? "south-shore" : "elsewhere");
+      },
+      () => renderSlots(consent, "unknown"),
+      { maximumAge: 86400000, timeout: 8000, enableHighAccuracy: false },
+    );
+  }
+  document.addEventListener("click", (e) => {
+    if (e.target.closest("[data-opt-in-ads]")) write({ ads: true });
+  });
+  document.addEventListener("change", (e) => {
+    const t = e.target;
+    if (t.matches("[data-ads-toggle]")) write({ ads: t.checked, geo: t.checked ? read().geo : false });
+    if (t.matches("[data-geo-toggle]")) write({ geo: t.checked });
+  });
+  window.addEventListener("desk-consent", locateAndPaint);
+  locateAndPaint();
+})();
+`;
 
 mkdirSync(out, { recursive: true });
 mkdirSync(join(out, "privacy"), { recursive: true });
@@ -147,34 +411,8 @@ try {
   /* optional */
 }
 
-const cssDir = join(root, ".vercel/output/static/assets");
-let css = "";
-try {
-  const name = readdirSync(cssDir).find((f) => f.startsWith("styles-") && f.endsWith(".css"));
-  if (name) css = readFileSync(join(cssDir, name), "utf8");
-} catch {
-  css = "";
-}
-if (!css) {
-  css = `body{background:#f4f0e8;color:#1c1916;font-family:"Public Sans",system-ui,sans-serif}h1,h2{font-family:"Newsreader",serif}`;
-}
-writeFileSync(join(out, "site.css"), css);
-
-writeFileSync(
-  join(out, "consent.js"),
-  `(() => {
-  const KEY = "newsroom-desk-consent-v1";
-  function read() {
-    try { return JSON.parse(localStorage.getItem(KEY) || "{}"); } catch { return {}; }
-  }
-  window.deskConsent = {
-    read,
-    write(next) {
-      localStorage.setItem(KEY, JSON.stringify({ ...read(), ...next, updatedAt: new Date().toISOString() }));
-    }
-  };
-})();`,
-);
+writeFileSync(join(out, "site.css"), SITE_CSS);
+writeFileSync(join(out, "consent.js"), CONSENT_JS);
 
 const lead = ARTICLES[0];
 const rest = ARTICLES.slice(1);
@@ -187,7 +425,7 @@ const homeBody = `
       <p class="mt-6 max-w-xl font-display text-xl leading-snug text-muted">${escapeHtml(lead.dek)}</p>
       <a href="story/${lead.slug}/" class="mt-8 inline-flex min-h-11 items-center rounded-sm bg-ink px-4 text-sm font-medium text-paper">Read the story</a>
     </div>
-    ${supportBox().replace("./privacy/", "privacy/")}
+    ${supportBox("privacy/")}
   </div>
 </section>
 <section class="border-b border-rule py-12">
@@ -204,7 +442,7 @@ const homeBody = `
         )
         .join("")}
     </div>
-    <p class="mt-8 text-sm text-muted">The graded evidence lives in <a href="record/" class="text-ink underline">the record</a>.</p>
+    <p class="mt-8 text-sm text-muted">The graded evidence lives in <a href="record/" class="text-ink underline">the record</a>. Every story back-links the others.</p>
   </div>
 </section>
 ${related("", null)}
@@ -214,7 +452,7 @@ writeFileSync(
   join(out, "index.html"),
   chrome({
     title: "Newsroom Desk — Edition",
-    description: "Published investigations on credit-report rights, Android accessibility, and background phone control.",
+    description: "Published investigations on credit-report rights, Android accessibility, and background phone control. Ads off unless you opt in.",
     prefix: "",
     active: "edition",
     body: homeBody,
@@ -225,15 +463,26 @@ writeFileSync(
   join(out, "privacy/index.html"),
   chrome({
     title: "Support and ads — Newsroom Desk",
-    description: "Ads are off unless you opt in. Default support is Buy me a coffee via Cash App $icoss.",
+    description: "Ads are off unless you opt in. Default support is Buy me a coffee via Cash App $icoss. South Shore house ads for Jules Gutter Cleaning.",
     prefix: "../",
     active: "privacy",
     body: `<div class="mx-auto max-w-3xl px-4 py-12 sm:px-6 sm:py-16">
       <p class="font-sans text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-slate">Support</p>
       <h1 class="mt-3 font-display text-4xl font-semibold">Ads stay off until you say so</h1>
       <p class="mt-5 font-display text-xl leading-snug text-muted">The default on every page is a Buy me a coffee banner and Cash App $icoss. No ad network script loads unless you opt in. House ads for Jules Gutter Cleaning are geo-fenced to the Massachusetts South Shore.</p>
-      <div class="mt-10">${supportBox().replace("./privacy/", "./")}</div>
-      <p class="mt-8 text-sm leading-relaxed">Location is requested only after ads are on, and only to decide whether a South Shore house ad may show. Coordinates stay in the browser.</p>
+      <div class="mt-10">${supportBox("./")}</div>
+      <section class="mt-12 space-y-4 text-sm leading-relaxed">
+        <h2 class="font-display text-2xl font-semibold">What you can choose</h2>
+        <p><strong>Default.</strong> Tip jar only. <a href="${CASH}" class="underline decoration-rule underline-offset-2">Cash App $icoss</a>.</p>
+        <p><strong>Ads, if you opt in.</strong> Ready for a house ad, not a third-party network yet. The only creative on file is Jules Gutter Cleaning, geo-fenced to Quincy, Braintree, Weymouth, Hingham, Hull, Cohasset, Scituate, Norwell, and nearby South Shore towns. Outside that fence you still see the tip jar.</p>
+        <p><strong>Location.</strong> Off unless you turn it on after ads. Coordinates are checked in the browser against a bounding box and are not sent to a broker.</p>
+      </section>
+      <section class="mt-10 rounded-lg border border-rule p-5">
+        <h2 class="font-display text-xl font-semibold">Your settings</h2>
+        <label class="row mt-4"><input type="checkbox" data-ads-toggle /> I opt in to ads</label>
+        <label class="row mt-2"><input type="checkbox" data-geo-toggle /> Allow location for South Shore house ads</label>
+        <p class="mt-3 text-xs text-muted">Stored on this device only. Clearing site data resets to ads off.</p>
+      </section>
     </div>`,
   }),
 );
@@ -242,49 +491,58 @@ writeFileSync(
   join(out, "record/index.html"),
   chrome({
     title: "The record — Newsroom Desk",
-    description: "Reporting record for investigations 4, 5, and 6.",
+    description: "Reporting record for investigations 4, 5, and 6, with every published story linked.",
     prefix: "../",
     active: "record",
     body: `<div class="mx-auto max-w-3xl px-4 py-12 sm:px-6 sm:py-16">
       <p class="font-sans text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-slate">Reporting record · 9 September 2026</p>
       <h1 class="mt-3 font-display text-4xl font-semibold">Stories 4, 5, and 6 are live</h1>
-      <p class="mt-5 font-display text-xl leading-snug text-muted">This record is the graded evidence behind the edition. Published copy uses only verified statute, agency, bureau, and Android documentation. Hypotheses stay hypotheses.</p>
-      <ul class="mt-8 space-y-4 text-sm leading-relaxed">
-        ${ARTICLES.map((a) => `<li><a class="font-display text-lg text-ink underline decoration-rule" href="../story/${a.slug}/">${escapeHtml(a.title)}</a> — published.</li>`).join("")}
-        <li><a class="font-display text-lg text-ink underline decoration-rule" href="${HALF}">Half a Mile</a> — sister essay, also live.</li>
+      <p class="mt-5 font-display text-xl leading-snug text-muted">This record is the graded evidence behind the edition. Published copy uses only verified statute, agency, bureau, and Android documentation. Hypotheses stay hypotheses. Every live piece is linked here.</p>
+      <p class="mt-8 font-sans text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-slate">Live this edition</p>
+      <ul class="mt-4 grid gap-3">
+        ${ARTICLES.map(
+          (a) => `<li><a class="block rounded-md border border-rule p-4 hover:bg-paper-2" href="../story/${a.slug}/"><span class="font-sans text-[0.7rem] uppercase tracking-[0.14em] text-slate">Story ${a.story} · published</span><span class="mt-1 block font-display text-lg font-semibold leading-snug">${escapeHtml(a.title)}</span></a></li>`,
+        ).join("")}
+        <li><a class="block rounded-md border border-rule p-4 hover:bg-paper-2" href="${HALF}"><span class="font-sans text-[0.7rem] uppercase tracking-[0.14em] text-slate">Sister site · live</span><span class="mt-1 block font-display text-lg font-semibold leading-snug">Half a Mile</span></a></li>
       </ul>
-      <p class="mt-8 text-sm text-muted">Do not publish: disparate-impact findings, “bureaus refuse email to evade FCRA,” Broccoli as proof, FLAG_SECURE as an accessibility kill-switch, or Computer Control as a third-party app API.</p>
+      <p class="mt-8 text-sm leading-relaxed text-muted">Ads stay off unless you opt in. Buy me a coffee: <a class="text-ink underline" href="${CASH}">Cash App $icoss</a>. South Shore house ads for Jules Gutter Cleaning are ready if you opt in. <a class="text-ink underline" href="../privacy/">Support and ads</a>.</p>
+      <h2 class="mt-12 font-display text-2xl font-semibold">Do not publish yet</h2>
+      <ol class="mt-4 space-y-3 text-sm leading-relaxed">
+        ${DO_NOT_PUBLISH.map((item, i) => `<li>${i + 1}. ${escapeHtml(item)}</li>`).join("")}
+      </ol>
     </div>${related("../", null)}`,
   }),
 );
 
 const bodies = {
   "the-cost-of-proving-youre-right": [
-    ["p", "The Fair Credit Reporting Act does not charge you to be believed. If an item on a nationwide file is incomplete or inaccurate, Equifax, Experian, and TransUnion must reinvestigate, free of charge, generally within 30 days of notice."],
+    ["p", "The Fair Credit Reporting Act does not charge you to be believed. If an item on a nationwide file is incomplete or inaccurate, Equifax, Experian, and TransUnion must reinvestigate, free of charge, generally within 30 days of notice. That is the statute, not a slogan."],
     ["q", "FCRA", "the agency shall, free of charge, conduct a reasonable reinvestigation … before the end of the 30-day period beginning on the date on which the agency receives the notice of the dispute", "15 U.S.C. § 1681i(a)(1)(A)"],
-    ["p", "The CFPB’s public guidance, last reviewed 2 September 2026, lists three official doors: websites, phone lines, and the U.S. mail. Email is not on the list."],
+    ["p", "The Consumer Financial Protection Bureau’s public guidance, last reviewed 2 September 2026, lists three official doors: the bureaus’ websites, their phone lines, and the U.S. mail. Email is not on the list. Fax is not on the list."],
     ["h2", "The receipt the government recommends"],
     ["q", "FTC", "Send your letter by certified mail with “return receipt requested,” so you can document that the credit bureaus got it.", "FTC sample letter, April 2024"],
-    ["p", "The investigation is free. The recommended paper trail is not. At July 2026 USPS rates, a one-ounce certified letter with electronic return receipt is $9.28. Reconfirm Notice 123 before any later reprint."],
+    ["p", "The investigation is free. The recommended paper trail is not. At the USPS July 2026 Notice 123 rates, a one-ounce stamped letter sent certified with electronic return receipt is $9.28. A three-bureau set is on the order of $28 in postage alone. Reconfirm Notice 123 before any later reprint."],
     ["h2", "The website is not always a complete path"],
-    ["p", "TransUnion’s dispute FAQ, rechecked 9 September 2026, caps online evidence at five documents and five megabytes. Public-record disputes and changes of name, SSN, date of birth, or address go by mail."],
-    ["p", "A furnisher must investigate a direct dispute only if it arrives at a specified address. Wrong box, no duty. 12 CFR 1022.43(c). The CFPB complaint door, as of April 2026, tells credit-reporting complainants to wait 45 days. As of June 2026, complaint accounts require email-and-mobile two-factor authentication."],
-    ["note", "This story does not find that dispute rights are inaccessible to disabled people. That remains a hypothesis. It does not find that the bureaus refuse email to evade the FCRA."],
+    ["p", "TransUnion’s own dispute FAQ, rechecked 9 September 2026, caps online evidence at five documents and five megabytes, with a one-hour window to attach them. Public-record disputes cannot be documented through that upload. Neither can a change of name, Social Security number, date of birth, or address. Those go by mail."],
+    ["p", "If you write the company that furnished the item, Regulation V is unforgiving about the envelope. A furnisher must investigate a direct dispute only if it arrives at an address the furnisher has specified. (12 CFR 1022.43(c).) The CFPB complaint door, as of April 2026, tells credit-reporting complainants to wait 45 days. As of June 2026, complaint accounts require email-and-mobile two-factor authentication."],
+    ["note", "This story does not find that dispute rights are inaccessible to disabled people. That remains an investigative hypothesis. It does not find that the bureaus refuse email in order to evade the FCRA. It does not find that online disputes are “fake.” Those claims are not ready."],
   ],
   "android-can-see-the-button": [
-    ["p", "Android documents an accessibility service that, once the user turns it on in Settings, can read on-screen controls and perform actions. Play treats the same primitive as a malware surface."],
+    ["p", "If the remaining path to a consumer right is a smartphone, the next question is not whether Android has accessibility features. It does. The question is whether a person can tell an assistant what they want and have the phone carry the task through — safely, with the person still in charge."],
+    ["p", "Android documents an accessibility service that, once the user turns it on in Settings, can read on-screen controls and perform actions. That is the same primitive set TalkBack uses. It is also the primitive set that Play treats as a malware surface."],
     ["q", "Play policy", "Any use of the Accessibility API that enables an app to autonomously initiate, plan, and execute actions or decisions is strictly prohibited.", "Google Play, Use of the AccessibilityService API"],
-    ["p", "Genuine accessibility tools are carved out. Assistants, automation tools, password managers, and launchers are not. A deterministic if-X-then-Y script can still ship. An LLM planner cannot, unless the app is a disability-core tool."],
-    ["p", "Google’s own docs state that many apps do not appropriately support ACTION_CLICK, and describe a gesture-tap fallback. A true return from performAction does not prove the app did the thing."],
+    ["p", "The ban is for ordinary apps. Genuine accessibility tools — whose core purpose is assisting people with disabilities — are carved out. Assistants, automation tools, password managers, and launchers do not qualify. Play still allows a non-tool to run a deterministic script. An LLM planner is the banned category."],
+    ["p", "Google’s own AccessibilityService documentation states that many apps do not appropriately support ACTION_CLICK, and it describes a gesture-tap fallback. A true return from performAction does not prove the app did the thing."],
     ["q", "Voice Access", "If your device is awake and unlocked, anyone can control it with their voice.", "Android Accessibility Help"],
-    ["note", "This story does not find that enabling an accessibility service lets an AI use your phone. It does not treat any automation testbed as evidence that a disabled consumer can complete a bureau dispute."],
+    ["note", "This story does not find that enabling an accessibility service lets an AI “use your phone.” It does not treat any automation testbed as evidence that a disabled consumer can complete a bureau dispute. Those claims are not ready."],
   ],
   "the-invisible-phone": [
     ["p", "There are two stacks. Journalism that collapses them will get the platform wrong."],
-    ["p", "The public stack is AccessibilityService: it reads the tree and acts on the display the user is looking at. The privileged stack is Computer Control: an OEM assistant, ACCESS_COMPUTER_CONTROL, a virtual device, and screenshot analysis. Third parties cannot hold that permission."],
+    ["p", "The public stack is AccessibilityService: a user-enabled service that reads the tree and acts on the display the user is looking at. It can run as a background service. It still occupies the screen."],
+    ["p", "The privileged stack is Computer Control. Google documents it as a way for an OEM-preloaded assistant, holding ACCESS_COMPUTER_CONTROL, to run apps on a background virtual display. Third-party apps cannot hold that permission."],
     ["q", "Computer Control", "the assistant app determines how to navigate by analyzing screenshots of the target app’s UI.", "Android Developers, Computer Control"],
-    ["p", "FLAG_SECURE blocks screenshots, not the accessibility tree. The tree-side control in Android 16 is accessibilityDataSensitive."],
-    ["note", "There is, in the public API surface, no general, root-free, provider-agnostic way for a third-party agent to operate Android without occupying the user’s screen."],
+    ["p", "FLAG_SECURE blocks screenshots. It does not hide a view from the accessibility tree. The tree-side control in Android 16 is accessibilityDataSensitive."],
+    ["note", "There is, in the public API surface, no general, root-free, provider-agnostic way for a third-party agent to operate Android without occupying the user’s screen. That is a verified absence, not a dare."],
   ],
 };
 
@@ -308,7 +566,7 @@ for (const article of ARTICLES) {
     </header>
     <div class="mx-auto max-w-3xl space-y-6 px-4 pb-16 sm:px-6">
       ${blocks}
-      <div class="pt-8">${supportBox().replace("./privacy/", "../../privacy/")}</div>
+      <div class="pt-8">${supportBox("../../privacy/")}</div>
     </div>
   </article>
   ${related("../../", article.slug)}`;

@@ -2,8 +2,18 @@ import { Link } from "@tanstack/react-router";
 import { ARTICLES, articlesBySlugs } from "@/lib/articles";
 import { SISTER_SITES } from "@/lib/catalog";
 
-export function RelatedStories({ slugs, includeSister = true }: { slugs?: string[]; includeSister?: boolean }) {
-  const related = slugs ? articlesBySlugs(slugs) : ARTICLES;
+export function RelatedStories({
+  slugs,
+  except,
+  includeSister = true,
+}: {
+  slugs?: string[];
+  except?: string;
+  includeSister?: boolean;
+}) {
+  const related = slugs
+    ? articlesBySlugs(slugs)
+    : ARTICLES.filter((article) => article.slug !== except);
 
   return (
     <section className="border-t border-rule py-12">
@@ -20,11 +30,12 @@ export function RelatedStories({ slugs, includeSister = true }: { slugs?: string
               className="rounded-md border border-rule p-5 hover:bg-paper-2"
             >
               <p className="font-sans text-[0.7rem] uppercase tracking-[0.14em] text-slate">
-                Story {article.story}
+                Story {article.story} · published
               </p>
               <h2 className="mt-2 font-display text-xl font-semibold leading-snug">
                 {article.title}
               </h2>
+              <p className="mt-2 text-sm leading-relaxed text-muted">{article.dek}</p>
             </Link>
           ))}
           {includeSister
@@ -35,7 +46,7 @@ export function RelatedStories({ slugs, includeSister = true }: { slugs?: string
                   className="rounded-md border border-rule p-5 hover:bg-paper-2"
                 >
                   <p className="font-sans text-[0.7rem] uppercase tracking-[0.14em] text-slate">
-                    Sister site
+                    Sister site · live
                   </p>
                   <h2 className="mt-2 font-display text-xl font-semibold leading-snug">
                     {site.title}

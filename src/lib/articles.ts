@@ -214,3 +214,7 @@ export function articlesBySlugs(slugs: string[]) {
     .map((slug) => articleBySlug(slug))
     .filter((a): a is Article => Boolean(a));
 }
+
+export function otherArticles(except?: string) {
+  return ARTICLES.filter((a) => a.slug !== except);
+}
