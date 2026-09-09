@@ -7,7 +7,7 @@ const out = join(root, "docs");
 
 const CASH = "https://cash.app/$icoss";
 const HALF = "https://half-a-mile.vercel.app";
-const LIVE = "https://newsroom-desk.vercel.app";
+const LIVE = "https://newsroom-desk-five.vercel.app";
 const PAGES = "https://onnxscibroccoli.github.io/desk";
 const GITHUB = "https://github.com/onnxscibroccoli/newsroom-desk";
 
@@ -502,7 +502,7 @@ writeFileSync(
       <p class="font-sans text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-slate">Reporting record · 9 September 2026</p>
       <h1 class="mt-3 font-display text-4xl font-semibold">Stories 4, 5, and 6 are live</h1>
       <p class="mt-5 font-display text-xl leading-snug text-muted">This record is the graded evidence behind the edition. Published copy uses only verified statute, agency, bureau, and Android documentation. Hypotheses stay hypotheses. Every live piece is linked here.</p>
-      <p class="mt-6 text-sm leading-relaxed text-muted">Live: <a class="text-ink underline" href="${LIVE}">newsroom-desk.vercel.app</a> · <a class="text-ink underline" href="${PAGES}">static pages</a> · <a class="text-ink underline" href="${GITHUB}">source</a>.</p>
+      <p class="mt-6 text-sm leading-relaxed text-muted">Live: <a class="text-ink underline" href="${LIVE}">${LIVE.replace("https://", "")}</a> · <a class="text-ink underline" href="${PAGES}">${PAGES.replace("https://", "")}</a> · <a class="text-ink underline" href="${GITHUB}">source</a>.</p>
       <p class="mt-8 font-sans text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-slate">Live this edition</p>
       <ul class="mt-4 grid gap-3">
         ${ARTICLES.map(
