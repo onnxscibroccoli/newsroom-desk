@@ -4,7 +4,7 @@ Published investigations 4, 5, and 6 — credit-report rights, Android accessibi
 
 ## Live
 
-- **Public site (Vercel):** [https://newsroom-desk.vercel.app](https://newsroom-desk.vercel.app)
+- **Public site (Vercel):** [https://newsroom-desk-five.vercel.app](https://newsroom-desk-five.vercel.app)
 - **Static pages:** [https://onnxscibroccoli.github.io/desk](https://onnxscibroccoli.github.io/desk)
 - **GitHub:** [https://github.com/onnxscibroccoli/newsroom-desk](https://github.com/onnxscibroccoli/newsroom-desk)
 - **Sister essay:** [Half a Mile](https://half-a-mile.vercel.app) · [GitHub Pages](https://onnxscibroccoli.github.io/)
@@ -13,11 +13,11 @@ Vercel is the public front door. GitHub Pages serves the full `docs/` snapshot (
 
 ## Edition
 
-- [Your credit-report rights are free. The receipt is not.](https://newsroom-desk.vercel.app/story/the-cost-of-proving-youre-right/)
-- [Android can see the button. It cannot finish the form.](https://newsroom-desk.vercel.app/story/android-can-see-the-button/)
-- [Google built background phone control — for Google](https://newsroom-desk.vercel.app/story/the-invisible-phone/)
-- [The record](https://newsroom-desk.vercel.app/record/) — every live story is linked here
-- [Support and ads](https://newsroom-desk.vercel.app/privacy/)
+- [Your credit-report rights are free. The receipt is not.](https://onnxscibroccoli.github.io/desk/story/the-cost-of-proving-youre-right/)
+- [Android can see the button. It cannot finish the form.](https://onnxscibroccoli.github.io/desk/story/android-can-see-the-button/)
+- [Google built background phone control — for Google](https://onnxscibroccoli.github.io/desk/story/the-invisible-phone/)
+- [The record](https://onnxscibroccoli.github.io/desk/record/) — every live story is linked here
+- [Support and ads](https://onnxscibroccoli.github.io/desk/privacy/)
 
 ## Support
 

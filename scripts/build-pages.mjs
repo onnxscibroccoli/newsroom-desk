@@ -7,7 +7,7 @@ const out = join(root, "docs");
 
 const CASH = "https://cash.app/$icoss";
 const HALF = "https://half-a-mile.vercel.app";
-const LIVE = "https://newsroom-desk.vercel.app";
+const LIVE = "https://newsroom-desk-five.vercel.app";
 const PAGES = "https://onnxscibroccoli.github.io/desk";
 const GITHUB = "https://github.com/onnxscibroccoli/newsroom-desk";
 const PHONE_DISPLAY = "(267) 667-2321";

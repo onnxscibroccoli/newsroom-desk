@@ -57,15 +57,13 @@ export function SupportSlot({ compact = false }: { compact?: boolean }) {
           <Coffee className="size-4" />
           Cash App ${CASH_APP_HANDLE}
         </a>
-        {compact ? null : (
-          <button
-            type="button"
-            className="inline-flex min-h-11 items-center rounded-sm border border-rule px-4 text-sm font-medium text-ink hover:bg-paper"
-            onClick={() => update({ ads: true })}
-          >
-            Show ads instead
-          </button>
-        )}
+        <button
+          type="button"
+          className="inline-flex min-h-11 items-center rounded-sm border border-rule px-4 text-sm font-medium text-ink hover:bg-paper"
+          onClick={() => update({ ads: true })}
+        >
+          Show ads instead
+        </button>
       </div>
       {compact ? null : (
         <p className="mt-3 text-xs text-muted">

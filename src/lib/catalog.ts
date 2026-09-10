@@ -1,7 +1,7 @@
 export const CASH_APP_HANDLE = "icoss";
 export const CASH_APP_URL = "https://cash.app/$icoss";
 
-export const DESK_LIVE = "https://newsroom-desk.vercel.app";
+export const DESK_LIVE = "https://newsroom-desk-five.vercel.app";
 export const DESK_PAGES = "https://onnxscibroccoli.github.io/desk";
 export const DESK_GITHUB = "https://github.com/onnxscibroccoli/newsroom-desk";
 
