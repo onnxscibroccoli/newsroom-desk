@@ -68,7 +68,7 @@ function Cover() {
       <div className="mx-auto grid max-w-6xl gap-10 px-4 py-14 sm:px-6 sm:py-20 lg:grid-cols-[1.15fr_0.85fr] lg:items-start">
         <div>
           <p className="font-sans text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-slate">
-            Reporting record · updated 9 September 2026
+            Reporting record · updated 10 September 2026
           </p>
           <h1 className="mt-4 max-w-xl font-display text-[2.6rem] font-semibold leading-[1.08] text-ink sm:text-6xl">
             The cost of digital autonomy
@@ -82,7 +82,12 @@ function Cover() {
             <a href={CASH_APP_URL} className="text-ink underline decoration-rule underline-offset-2">
               Cash App ${CASH_APP_HANDLE}
             </a>
-            . South Shore house ads for Jules Gutter Cleaning are ready if you opt in.{" "}
+            . If you skip the tip, a non-intrusive paying ad sits at the bottom of
+            the screen. South Shore house ads for Jules Gutter Cleaning include{" "}
+            <a href="tel:+12676672321" className="text-ink underline decoration-rule underline-offset-2">
+              (267) 667-2321
+            </a>
+            .{" "}
             <Link to="/privacy" className="text-ink underline decoration-rule underline-offset-2">
               Support and ads
             </Link>

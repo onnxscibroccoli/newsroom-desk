@@ -7,9 +7,11 @@ const out = join(root, "docs");
 
 const CASH = "https://cash.app/$icoss";
 const HALF = "https://half-a-mile.vercel.app";
-const LIVE = "https://newsroom-desk-five.vercel.app";
+const LIVE = "https://newsroom-desk.vercel.app";
 const PAGES = "https://onnxscibroccoli.github.io/desk";
 const GITHUB = "https://github.com/onnxscibroccoli/newsroom-desk";
+const PHONE_DISPLAY = "(267) 667-2321";
+const TEL = "tel:+12676672321";
 
 const ARTICLES = [
   {
@@ -109,7 +111,7 @@ function chrome({ title, description, prefix, active, body }) {
     <div class="mx-auto grid max-w-6xl gap-8 px-4 py-10 sm:px-6 md:grid-cols-2">
       <div>
         <p class="font-display text-lg text-ink">Newsroom Desk</p>
-        <p class="mt-2 max-w-md text-sm leading-relaxed text-muted">Published investigations and the reporting record behind them. Ads stay off unless you opt in. Buy me a coffee: Cash App $icoss.</p>
+        <p class="mt-2 max-w-md text-sm leading-relaxed text-muted">Published investigations and the reporting record behind them. Ads stay off unless you opt in. Buy me a coffee: Cash App $icoss. Paying ads, if you opt in, sit in a bar at the bottom of the screen.</p>
       </div>
       <div class="flex flex-col gap-2 text-sm">
         <a href="${home}" class="text-ink hover:underline">This edition</a>
@@ -117,9 +119,11 @@ function chrome({ title, description, prefix, active, body }) {
         <a href="${privacy}" class="text-ink hover:underline">Support and ads</a>
         <a href="${HALF}" class="text-ink hover:underline">Half a Mile</a>
         <a href="${CASH}" class="text-ink hover:underline">Cash App $icoss</a>
+        <a href="${TEL}" class="text-ink hover:underline">${PHONE_DISPLAY}</a>
       </div>
     </div>
   </footer>
+  <aside id="ad-rail" class="ad-rail" hidden aria-label="Advertisement"></aside>
   <script src="${prefix}consent.js"></script>
 </body>
 </html>
@@ -130,7 +134,7 @@ function supportBox(privacyHref) {
   return `<aside class="rounded-lg border border-rule bg-paper-2 p-5 sm:p-6" data-support data-privacy="${privacyHref}">
   <p class="font-sans text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-slate">Keep the desk independent</p>
   <h2 class="mt-2 font-display text-2xl font-semibold">Buy me a coffee</h2>
-  <p class="mt-2 max-w-xl text-sm leading-relaxed text-muted">Ads stay off unless you turn them on. Until then this slot is a tip jar — Cash App $icoss.</p>
+  <p class="mt-2 max-w-xl text-sm leading-relaxed text-muted">Ads stay off unless you turn them on. Until then this slot is a tip jar — Cash App $icoss. If you would rather see a paying ad than tip, opt in and a bar appears at the bottom of the screen.</p>
   <div class="mt-4 flex flex-wrap gap-2">
     <a href="${CASH}" class="inline-flex min-h-11 items-center rounded-sm bg-ink px-4 text-sm font-medium text-paper">Cash App $icoss</a>
     <a href="${privacyHref}" class="inline-flex min-h-11 items-center rounded-sm border border-rule px-4 text-sm font-medium text-ink">Ads settings</a>
@@ -287,6 +291,9 @@ details summary::-webkit-details-marker { display: none; }
 .menu { position: absolute; right: 1rem; margin-top: 0.5rem; display: grid; min-width: 12rem; gap: 0.25rem; border: 1px solid var(--rule); background: var(--paper); padding: 0.5rem; border-radius: 8px; }
 .menu a { min-height: 2.75rem; display: flex; align-items: center; padding: 0 0.75rem; }
 label.row { display: flex; align-items: center; gap: 0.75rem; min-height: 2.75rem; font-size: 0.875rem; }
+.ad-rail { position: fixed; left: 0; right: 0; bottom: 0; z-index: 50; border-top: 1px solid var(--rule); background: color-mix(in oklab, var(--paper-2) 95%, transparent); }
+.ad-rail-inner { max-width: 72rem; margin: 0 auto; padding: 0.7rem 1rem; display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; justify-content: space-between; }
+body.has-ads { padding-bottom: 7rem; }
 @media (min-width: 40rem) {
   .sm\\:px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
   .sm\\:py-16 { padding-top: 4rem; padding-bottom: 4rem; }
@@ -313,6 +320,8 @@ label.row { display: flex; align-items: center; gap: 0.75rem; min-height: 2.75re
 const CONSENT_JS = `(() => {
   const KEY = "newsroom-desk-consent-v1";
   const CASH = "https://cash.app/$icoss";
+  const TEL = "tel:+12676672321";
+  const PHONE = "(267) 667-2321";
   const BOX = { minLat: 41.98, maxLat: 42.32, minLng: -71.12, maxLng: -70.64 };
   function inSouthShore(lat, lng) {
     return lat >= BOX.minLat && lat <= BOX.maxLat && lng >= BOX.minLng && lng <= BOX.maxLng;
@@ -332,40 +341,74 @@ const CONSENT_JS = `(() => {
     window.dispatchEvent(new CustomEvent("desk-consent"));
     return next;
   }
-  function coffee(privacy, consent, geo) {
-    const note = consent.ads
-      ? (consent.geo
-          ? (geo === "elsewhere"
-              ? "House ads for Jules Gutter Cleaning are geo-fenced to the South Shore. This device is outside that fence, so you still see the tip jar."
-              : "Ads are on. Local South Shore ads load only if this device is inside the fence.")
-          : "Ads are on, but location is off. Local South Shore ads will not load without it.")
-      : "Future ads, if you opt in, can be geo-fenced to the South Shore for Jules Gutter Cleaning. No ad network loads until you say so.";
+  function coffee(privacy) {
     return \`
       <p class="font-sans text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-slate">Keep the desk independent</p>
       <h2 class="mt-2 font-display text-2xl font-semibold">Buy me a coffee</h2>
-      <p class="mt-2 max-w-xl text-sm leading-relaxed text-muted">Ads stay off unless you turn them on. Until then this slot is a tip jar — Cash App $icoss.</p>
+      <p class="mt-2 max-w-xl text-sm leading-relaxed text-muted">Ads stay off unless you turn them on. Until then this slot is a tip jar — Cash App $icoss. If you would rather see a paying ad than tip, opt in and a bar appears at the bottom of the screen.</p>
       <div class="mt-4 flex flex-wrap gap-2">
         <a href="\${CASH}" class="inline-flex min-h-11 items-center rounded-sm bg-ink px-4 text-sm font-medium text-paper">Cash App $icoss</a>
-        \${consent.ads ? "" : '<button type="button" data-opt-in-ads class="inline-flex min-h-11 items-center rounded-sm border border-rule px-4 text-sm font-medium text-ink">Opt in to ads</button>'}
+        <button type="button" data-opt-in-ads class="inline-flex min-h-11 items-center rounded-sm border border-rule px-4 text-sm font-medium text-ink">Show ads instead</button>
         <a href="\${privacy}" class="inline-flex min-h-11 items-center rounded-sm border border-rule px-4 text-sm font-medium text-ink">Ads settings</a>
       </div>
-      <p class="mt-3 text-xs text-muted">\${note} <a href="\${privacy}" class="underline">How this works</a>.</p>
     \`;
   }
-  function jules(privacy) {
+  function adsOnCard(privacy) {
     return \`
-      <p class="font-sans text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-slate">South Shore · house ad</p>
-      <h2 class="mt-2 font-display text-2xl font-semibold">Jules Gutter Cleaning</h2>
-      <p class="mt-2 text-sm leading-relaxed text-muted">Gutters cleared. Downspouts flowing. South Shore Massachusetts.</p>
-      <a href="\${CASH}" class="mt-4 inline-flex min-h-11 items-center rounded-sm bg-ink px-4 text-sm font-medium text-paper">Pay or tip on Cash App $icoss</a>
-      <p class="mt-3 text-xs text-muted">Shown because you opted into ads and this device looks like South Shore Massachusetts. <a href="\${privacy}" class="underline">Change this</a>.</p>
+      <p class="font-sans text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-slate">Ads are on</p>
+      <h2 class="mt-2 font-display text-2xl font-semibold">Paying ads sit at the bottom</h2>
+      <p class="mt-2 max-w-xl text-sm leading-relaxed text-muted">A non-intrusive bar funds the desk. Prefer to skip ads? Tip instead — Cash App $icoss.</p>
+      <div class="mt-4 flex flex-wrap gap-2">
+        <a href="\${CASH}" class="inline-flex min-h-11 items-center rounded-sm bg-ink px-4 text-sm font-medium text-paper">Cash App $icoss</a>
+        <a href="\${privacy}" class="inline-flex min-h-11 items-center rounded-sm border border-rule px-4 text-sm font-medium text-ink">Ad settings</a>
+      </div>
     \`;
+  }
+  function julesRail(privacy) {
+    return \`<div class="ad-rail-inner">
+      <div>
+        <p class="font-sans text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-slate">Advertisement · Paid · South Shore</p>
+        <p class="mt-1 font-display text-lg font-semibold">Jules Gutter Cleaning</p>
+        <p class="text-sm text-muted">Gutters cleared. Downspouts flowing. South Shore Massachusetts.</p>
+      </div>
+      <div class="flex flex-wrap gap-2">
+        <a href="\${TEL}" rel="sponsored nofollow" class="inline-flex min-h-11 items-center rounded-sm bg-ink px-4 text-sm font-medium text-paper">\${PHONE}</a>
+        <a href="\${CASH}" rel="sponsored nofollow" class="inline-flex min-h-11 items-center rounded-sm border border-rule px-4 text-sm font-medium text-ink">Cash App $icoss</a>
+        <a href="\${privacy}" class="inline-flex min-h-11 items-center text-xs text-muted underline">Ad settings</a>
+      </div>
+    </div>\`;
+  }
+  function houseRail(privacy) {
+    return \`<div class="ad-rail-inner">
+      <div>
+        <p class="font-sans text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-slate">Advertisement · Paid placement</p>
+        <p class="mt-1 font-display text-lg font-semibold">Advertise on this desk</p>
+        <p class="text-sm text-muted">A non-intrusive paying ad funds the next investigation. Tip if you want; this bar is the other door.</p>
+      </div>
+      <div class="flex flex-wrap gap-2">
+        <a href="\${CASH}" rel="sponsored nofollow" class="inline-flex min-h-11 items-center rounded-sm bg-ink px-4 text-sm font-medium text-paper">Buy this space $icoss</a>
+        <a href="\${privacy}" class="inline-flex min-h-11 items-center text-xs text-muted underline">Ad settings</a>
+      </div>
+    </div>\`;
   }
   function renderSlots(consent, geo) {
     document.querySelectorAll("[data-support]").forEach((el) => {
       const privacy = el.getAttribute("data-privacy") || "privacy/";
-      el.innerHTML = consent.ads && geo === "south-shore" ? jules(privacy) : coffee(privacy, consent, geo);
+      el.innerHTML = consent.ads ? adsOnCard(privacy) : coffee(privacy);
     });
+    const rail = document.getElementById("ad-rail");
+    if (rail) {
+      const privacy = document.querySelector("[data-support]")?.getAttribute("data-privacy") || "privacy/";
+      if (consent.ads) {
+        rail.hidden = false;
+        document.body.classList.add("has-ads");
+        rail.innerHTML = geo === "south-shore" ? julesRail(privacy) : houseRail(privacy);
+      } else {
+        rail.hidden = true;
+        document.body.classList.remove("has-ads");
+        rail.innerHTML = "";
+      }
+    }
   }
   function syncForm(consent) {
     const ads = document.querySelector("[data-ads-toggle]");
@@ -409,6 +452,9 @@ mkdirSync(join(out, "privacy"), { recursive: true });
 mkdirSync(join(out, "record"), { recursive: true });
 writeFileSync(join(out, ".nojekyll"), "");
 copyFileSync(join(root, "public/favicon.svg"), join(out, "favicon.svg"));
+copyFileSync(join(root, "public/google509c8bb541abfc72.html"), join(out, "google509c8bb541abfc72.html"));
+copyFileSync(join(root, "public/robots.txt"), join(out, "robots.txt"));
+copyFileSync(join(root, "public/sitemap.xml"), join(out, "sitemap.xml"));
 try {
   copyFileSync(join(root, "public/og.jpg"), join(out, "og.jpg"));
 } catch {
@@ -467,24 +513,25 @@ writeFileSync(
   join(out, "privacy/index.html"),
   chrome({
     title: "Support and ads — Newsroom Desk",
-    description: "Ads are off unless you opt in. Default support is Buy me a coffee via Cash App $icoss. South Shore house ads for Jules Gutter Cleaning.",
+    description: "Ads are off unless you opt in. Default support is Buy me a coffee via Cash App $icoss. Paying ads sit at the bottom of the screen. South Shore house ads for Jules Gutter Cleaning.",
     prefix: "../",
     active: "privacy",
     body: `<div class="mx-auto max-w-3xl px-4 py-12 sm:px-6 sm:py-16">
       <p class="font-sans text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-slate">Support</p>
-      <h1 class="mt-3 font-display text-4xl font-semibold">Ads stay off until you say so</h1>
-      <p class="mt-5 font-display text-xl leading-snug text-muted">The default on every page is a Buy me a coffee banner and Cash App $icoss. No ad network script loads unless you opt in. House ads for Jules Gutter Cleaning are geo-fenced to the Massachusetts South Shore.</p>
+      <h1 class="mt-3 font-display text-4xl font-semibold">Tip, or a small ad at the bottom</h1>
+      <p class="mt-5 font-display text-xl leading-snug text-muted">The desk has to be paid for. The default is Buy me a coffee via Cash App $icoss. If you would rather not tip, opt in and a non-intrusive paying ad sits at the bottom of the screen. No third-party ad network loads until you say so.</p>
       <div class="mt-10">${supportBox("./")}</div>
       <section class="mt-12 space-y-4 text-sm leading-relaxed">
         <h2 class="font-display text-2xl font-semibold">What you can choose</h2>
         <p><strong>Default.</strong> Tip jar only. <a href="${CASH}" class="underline decoration-rule underline-offset-2">Cash App $icoss</a>.</p>
-        <p><strong>Ads, if you opt in.</strong> Ready for a house ad, not a third-party network yet. The only creative on file is Jules Gutter Cleaning, geo-fenced to Quincy, Braintree, Weymouth, Hingham, Hull, Cohasset, Scituate, Norwell, and nearby South Shore towns. Outside that fence you still see the tip jar.</p>
+        <p><strong>Paying ads, if you opt in.</strong> A first-party bar at the bottom of every page. That inventory funds the reporting when a reader does not want to buy a coffee. No Google Ads or other network script is attached yet.</p>
+        <p><strong>Local South Shore ads, if you also opt in to location.</strong> Jules Gutter Cleaning is the house advertiser for Quincy, Braintree, Weymouth, Hingham, Hull, Cohasset, Scituate, Norwell, and nearby towns. The creative includes <a href="${TEL}" class="underline">${PHONE_DISPLAY}</a>. Outside that fence you still see the national paying bar, not Jules.</p>
         <p><strong>Location.</strong> Off unless you turn it on after ads. Coordinates are checked in the browser against a bounding box and are not sent to a broker.</p>
       </section>
       <section class="mt-10 rounded-lg border border-rule p-5">
         <h2 class="font-display text-xl font-semibold">Your settings</h2>
-        <label class="row mt-4"><input type="checkbox" data-ads-toggle /> I opt in to ads</label>
-        <label class="row mt-2"><input type="checkbox" data-geo-toggle /> Allow location for South Shore house ads</label>
+        <label class="row mt-4"><input type="checkbox" data-ads-toggle /> I opt in to paying ads at the bottom of the screen</label>
+        <label class="row mt-2"><input type="checkbox" data-geo-toggle /> Allow location for local South Shore ads (Jules Gutter Cleaning)</label>
         <p class="mt-3 text-xs text-muted">Stored on this device only. Clearing site data resets to ads off.</p>
       </section>
     </div>`,
@@ -499,10 +546,10 @@ writeFileSync(
     prefix: "../",
     active: "record",
     body: `<div class="mx-auto max-w-3xl px-4 py-12 sm:px-6 sm:py-16">
-      <p class="font-sans text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-slate">Reporting record · 9 September 2026</p>
+      <p class="font-sans text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-slate">Reporting record · 10 September 2026</p>
       <h1 class="mt-3 font-display text-4xl font-semibold">Stories 4, 5, and 6 are live</h1>
       <p class="mt-5 font-display text-xl leading-snug text-muted">This record is the graded evidence behind the edition. Published copy uses only verified statute, agency, bureau, and Android documentation. Hypotheses stay hypotheses. Every live piece is linked here.</p>
-      <p class="mt-6 text-sm leading-relaxed text-muted">Live: <a class="text-ink underline" href="${LIVE}">${LIVE.replace("https://", "")}</a> · <a class="text-ink underline" href="${PAGES}">${PAGES.replace("https://", "")}</a> · <a class="text-ink underline" href="${GITHUB}">source</a>.</p>
+      <p class="mt-6 text-sm leading-relaxed text-muted">Live: <a class="text-ink underline" href="${LIVE}">${LIVE.replace("https://", "")}</a> · <a class="text-ink underline" href="${PAGES}">static pages</a> · <a class="text-ink underline" href="${GITHUB}">source</a>.</p>
       <p class="mt-8 font-sans text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-slate">Live this edition</p>
       <ul class="mt-4 grid gap-3">
         ${ARTICLES.map(
@@ -510,7 +557,7 @@ writeFileSync(
         ).join("")}
         <li><a class="block rounded-md border border-rule p-4 hover:bg-paper-2" href="${HALF}"><span class="font-sans text-[0.7rem] uppercase tracking-[0.14em] text-slate">Sister site · live</span><span class="mt-1 block font-display text-lg font-semibold leading-snug">Half a Mile</span></a></li>
       </ul>
-      <p class="mt-8 text-sm leading-relaxed text-muted">Ads stay off unless you opt in. Buy me a coffee: <a class="text-ink underline" href="${CASH}">Cash App $icoss</a>. South Shore house ads for Jules Gutter Cleaning are ready if you opt in. <a class="text-ink underline" href="../privacy/">Support and ads</a>.</p>
+      <p class="mt-8 text-sm leading-relaxed text-muted">Ads stay off unless you opt in. Buy me a coffee: <a class="text-ink underline" href="${CASH}">Cash App $icoss</a>. If you skip the tip, a paying ad sits at the bottom of the screen. South Shore Jules ads include <a class="text-ink underline" href="${TEL}">${PHONE_DISPLAY}</a>. Search index file: google509c8bb541abfc72.html. <a class="text-ink underline" href="../privacy/">Support and ads</a>.</p>
       <h2 class="mt-12 font-display text-2xl font-semibold">Do not publish yet</h2>
       <ol class="mt-4 space-y-3 text-sm leading-relaxed">
         ${DO_NOT_PUBLISH.map((item, i) => `<li>${i + 1}. ${escapeHtml(item)}</li>`).join("")}

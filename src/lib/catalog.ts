@@ -1,9 +1,13 @@
 export const CASH_APP_HANDLE = "icoss";
 export const CASH_APP_URL = "https://cash.app/$icoss";
 
-export const DESK_LIVE = "https://newsroom-desk-five.vercel.app";
+export const DESK_LIVE = "https://newsroom-desk.vercel.app";
 export const DESK_PAGES = "https://onnxscibroccoli.github.io/desk";
 export const DESK_GITHUB = "https://github.com/onnxscibroccoli/newsroom-desk";
+
+export const DESK_PHONE = "267-667-2321";
+export const DESK_PHONE_DISPLAY = "(267) 667-2321";
+export const DESK_PHONE_TEL = "tel:+12676672321";
 
 export const SISTER_SITES = [
   {
@@ -58,8 +62,20 @@ export function inSouthShore(lat: number, lng: number) {
 
 export const JULES_AD = {
   advertiser: "Jules Gutter Cleaning",
-  kicker: "South Shore · house ad",
+  kicker: "Paid · South Shore",
   line: "Gutters cleared. Downspouts flowing. South Shore Massachusetts.",
-  cta: "Pay or tip on Cash App",
+  cta: "Call Jules",
+  phone: DESK_PHONE,
+  phoneDisplay: DESK_PHONE_DISPLAY,
+  tel: DESK_PHONE_TEL,
   href: CASH_APP_URL,
-};
+} as const;
+
+/** National paying placement when ads are on but the reader is outside the Jules fence. */
+export const HOUSE_AD = {
+  advertiser: "Advertise on this desk",
+  kicker: "Paid placement",
+  line: "A non-intrusive paying ad funds the next investigation. Tip if you want; this bar is the other door.",
+  cta: "Buy this space",
+  href: CASH_APP_URL,
+} as const;

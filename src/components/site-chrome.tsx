@@ -1,7 +1,15 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { Menu, X } from "lucide-react";
-import { CASH_APP_HANDLE, CASH_APP_URL, SISTER_SITES } from "@/lib/catalog";
+import { AdRail } from "@/components/ad-rail";
+import {
+  CASH_APP_HANDLE,
+  CASH_APP_URL,
+  DESK_PHONE_DISPLAY,
+  DESK_PHONE_TEL,
+  SISTER_SITES,
+} from "@/lib/catalog";
+import { useConsent } from "@/lib/consent-store";
 import { cn } from "@/lib/utils";
 
 const NAV = [
@@ -13,13 +21,14 @@ const NAV = [
 export function SiteChrome({ children }: { children: ReactNode }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const [open, setOpen] = useState(false);
+  const { consent, ready } = useConsent();
 
   useEffect(() => {
     setOpen(false);
   }, [pathname]);
 
   return (
-    <div className="min-h-dvh bg-paper text-ink">
+    <div className={cn("min-h-dvh bg-paper text-ink", ready && consent.ads ? "pb-28" : null)}>
       <a
         href="#main"
         className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:bg-ink focus:px-3 focus:py-2 focus:text-paper"
@@ -118,6 +127,7 @@ export function SiteChrome({ children }: { children: ReactNode }) {
               Published investigations and the reporting record behind them. Not
               legal advice. Not a product pitch. Ads stay off unless you opt in.
               Default support is Buy me a coffee via Cash App ${CASH_APP_HANDLE}.
+              Paying ads, if you opt in, sit in a bar at the bottom of the screen.
             </p>
           </div>
           <div className="flex flex-col gap-2 text-sm">
@@ -138,9 +148,13 @@ export function SiteChrome({ children }: { children: ReactNode }) {
             <a href={CASH_APP_URL} className="text-ink hover:underline">
               Cash App ${CASH_APP_HANDLE}
             </a>
+            <a href={DESK_PHONE_TEL} className="text-ink hover:underline">
+              {DESK_PHONE_DISPLAY}
+            </a>
           </div>
         </div>
       </footer>
+      <AdRail />
     </div>
   );
 }
