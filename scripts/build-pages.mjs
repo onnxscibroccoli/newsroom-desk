@@ -15,11 +15,20 @@ const TEL = "tel:+12676672321";
 
 const ARTICLES = [
   {
+    slug: "weymouth-flock-cameras-surveillance",
+    story: "7",
+    kicker: "Investigation 7 · Public records",
+    title: "Thirty-Five Cameras",
+    dek: "Weymouth Police operate a Flock Safety license-plate network that, on the department’s own portal, logged 579,188 unique plate reads in 30 days. Massachusetts has no ALPR statute. The Supreme Judicial Court has already written the test for when that kind of network becomes a search.",
+    published: "12 September 2026",
+  },
+  {
     slug: "the-cost-of-proving-youre-right",
     story: "4",
     kicker: "Investigation 4 · Consumer rights",
     title: "Your credit-report rights are free. The receipt is not.",
     dek: "Federal law gives you a free reinvestigation, generally within 30 days. The agencies that police that right still tell you to buy a certified-mail receipt if you want proof the letter arrived.",
+    published: "9 September 2026",
   },
   {
     slug: "android-can-see-the-button",
@@ -27,6 +36,7 @@ const ARTICLES = [
     kicker: "Investigation 5 · Accessibility",
     title: "Android can see the button. It cannot finish the form.",
     dek: "The accessibility APIs on an Android phone are real, documented, and powerful. They are not a license for an ordinary app to plan and tap its way through someone else’s life.",
+    published: "9 September 2026",
   },
   {
     slug: "the-invisible-phone",
@@ -34,6 +44,7 @@ const ARTICLES = [
     kicker: "Investigation 6 · Platform",
     title: "Google built background phone control — for Google",
     dek: "Android can run apps the user is not looking at. The documented way to do it is not the accessibility tree. It is a privileged, screenshot-driven virtual device reserved for the OEM assistant.",
+    published: "9 September 2026",
   },
 ];
 
@@ -46,6 +57,7 @@ const DO_NOT_PUBLISH = [
   "“Just enable AccessibilityService and an AI can use your phone.”",
   "FLAG_SECURE as an accessibility kill-switch.",
   "Computer Control as a third-party app API.",
+  "“Weymouth’s Flock cameras are unconstitutional.” (McCarthy wrote a density test; it did not decide a 35-camera city.)",
 ];
 
 function escapeHtml(s) {
@@ -58,11 +70,12 @@ function escapeHtml(s) {
   });
 }
 
-function chrome({ title, description, prefix, active, body }) {
+function chrome({ title, description, prefix, active, body, path }) {
   const css = `${prefix}site.css`;
   const home = prefix === "" ? "./" : prefix;
   const record = `${prefix}record/`;
   const privacy = `${prefix}privacy/`;
+  const canonical = `${PAGES}${path}`;
   const navLink = (href, id, label) =>
     `<a href="${href}" class="inline-flex min-h-11 items-center rounded-sm px-3 text-sm font-medium ${active === id ? "bg-ink text-paper" : "text-muted"}">${label}</a>`;
   return `<!doctype html>
@@ -72,6 +85,7 @@ function chrome({ title, description, prefix, active, body }) {
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>${escapeHtml(title)}</title>
   <meta name="description" content="${escapeHtml(description)}" />
+  <link rel="canonical" href="${canonical}" />
   <link rel="icon" type="image/svg+xml" href="${prefix}favicon.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -453,8 +467,32 @@ mkdirSync(join(out, "record"), { recursive: true });
 writeFileSync(join(out, ".nojekyll"), "");
 copyFileSync(join(root, "public/favicon.svg"), join(out, "favicon.svg"));
 copyFileSync(join(root, "public/google509c8bb541abfc72.html"), join(out, "google509c8bb541abfc72.html"));
-copyFileSync(join(root, "public/robots.txt"), join(out, "robots.txt"));
-copyFileSync(join(root, "public/sitemap.xml"), join(out, "sitemap.xml"));
+const robotsTxt = `User-agent: *\nAllow: /\n\nSitemap: ${PAGES}/sitemap.xml\n`;
+const lastmod = "2026-09-12";
+const sitemapUrls = [
+  { path: "/", changefreq: "weekly", priority: "1.0" },
+  { path: "/record/", changefreq: "weekly", priority: "0.9" },
+  { path: "/privacy/", changefreq: "monthly", priority: "0.5" },
+  ...ARTICLES.map((a) => ({ path: `/story/${a.slug}/`, changefreq: "monthly", priority: "0.8" })),
+];
+const sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${sitemapUrls
+  .map(
+    (u) => `  <url>
+    <loc>${PAGES}${u.path}</loc>
+    <lastmod>${lastmod}</lastmod>
+    <changefreq>${u.changefreq}</changefreq>
+    <priority>${u.priority}</priority>
+  </url>`,
+  )
+  .join("\n")}
+</urlset>
+`;
+writeFileSync(join(root, "public/robots.txt"), robotsTxt);
+writeFileSync(join(root, "public/sitemap.xml"), sitemapXml);
+writeFileSync(join(out, "robots.txt"), robotsTxt);
+writeFileSync(join(out, "sitemap.xml"), sitemapXml);
 try {
   copyFileSync(join(root, "public/og.jpg"), join(out, "og.jpg"));
 } catch {
@@ -470,7 +508,7 @@ const homeBody = `
 <section class="border-b border-rule">
   <div class="mx-auto grid max-w-6xl gap-10 px-4 py-14 sm:px-6 sm:py-20 lg:grid-cols-[1.45fr_0.85fr] lg:items-end">
     <div>
-      <p class="font-sans text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-slate">Edition · 9 September 2026</p>
+      <p class="font-sans text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-slate">Edition · 12 September 2026</p>
       <h1 class="mt-4 max-w-xl font-display text-[2.6rem] font-semibold leading-[1.08] text-ink sm:text-6xl">${escapeHtml(lead.title)}</h1>
       <p class="mt-6 max-w-xl font-display text-xl leading-snug text-muted">${escapeHtml(lead.dek)}</p>
       <a href="story/${lead.slug}/" class="mt-8 inline-flex min-h-11 items-center rounded-sm bg-ink px-4 text-sm font-medium text-paper">Read the story</a>
@@ -502,9 +540,10 @@ writeFileSync(
   join(out, "index.html"),
   chrome({
     title: "Newsroom Desk — Edition",
-    description: "Published investigations on credit-report rights, Android accessibility, and background phone control. Ads off unless you opt in.",
+    description: "Published investigations on Flock cameras in Weymouth, credit-report rights, Android accessibility, and background phone control. Ads off unless you opt in.",
     prefix: "",
     active: "edition",
+    path: "/",
     body: homeBody,
   }),
 );
@@ -516,6 +555,7 @@ writeFileSync(
     description: "Ads are off unless you opt in. Default support is Buy me a coffee via Cash App $icoss. Paying ads sit at the bottom of the screen. South Shore house ads for Jules Gutter Cleaning.",
     prefix: "../",
     active: "privacy",
+    path: "/privacy/",
     body: `<div class="mx-auto max-w-3xl px-4 py-12 sm:px-6 sm:py-16">
       <p class="font-sans text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-slate">Support</p>
       <h1 class="mt-3 font-display text-4xl font-semibold">Tip, or a small ad at the bottom</h1>
@@ -542,13 +582,14 @@ writeFileSync(
   join(out, "record/index.html"),
   chrome({
     title: "The record — Newsroom Desk",
-    description: "Reporting record for investigations 4, 5, and 6, with every published story linked.",
+    description: "Reporting record for investigations 4, 5, 6, and 7, with every published story linked.",
     prefix: "../",
     active: "record",
+    path: "/record/",
     body: `<div class="mx-auto max-w-3xl px-4 py-12 sm:px-6 sm:py-16">
-      <p class="font-sans text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-slate">Reporting record · 10 September 2026</p>
-      <h1 class="mt-3 font-display text-4xl font-semibold">Stories 4, 5, and 6 are live</h1>
-      <p class="mt-5 font-display text-xl leading-snug text-muted">This record is the graded evidence behind the edition. Published copy uses only verified statute, agency, bureau, and Android documentation. Hypotheses stay hypotheses. Every live piece is linked here.</p>
+      <p class="font-sans text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-slate">Reporting record · 12 September 2026</p>
+      <h1 class="mt-3 font-display text-4xl font-semibold">Stories 4, 5, 6, and 7 are live</h1>
+      <p class="mt-5 font-display text-xl leading-snug text-muted">This record is the graded evidence behind the edition. Published copy uses only verified statute, agency, bureau, Android documentation, and departmental portals. Hypotheses stay hypotheses. Every live piece is linked here.</p>
       <p class="mt-6 text-sm leading-relaxed text-muted">Live: <a class="text-ink underline" href="${LIVE}">${LIVE.replace("https://", "")}</a> · <a class="text-ink underline" href="${PAGES}">static pages</a> · <a class="text-ink underline" href="${GITHUB}">source</a>.</p>
       <p class="mt-8 font-sans text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-slate">Live this edition</p>
       <ul class="mt-4 grid gap-3">
@@ -567,6 +608,30 @@ writeFileSync(
 );
 
 const bodies = {
+  "weymouth-flock-cameras-surveillance": [
+    ["p", "In a single thirty-day window ending around 3 September 2026, the Weymouth Police Department’s Flock Safety portal reported 579,188 unique plate reads, 263 search sessions, and 4,368 hotlist hits across 35 cameras. The same page says the data is owned by the department, is never sold, is purged after 30 days, and may not be used for immigration enforcement, ordinary traffic enforcement, harassment, or personal use. That is the department speaking, through a vendor-hosted page. It is the most complete public accounting this newsroom has of how the cameras are supposed to run."],
+    ["p", "It is not a statute. Massachusetts does not have one. Automated license plate recognition is regulated here the way most local surveillance is regulated: by the contract a police department signed, by the policy that department posted or did not post, and by two constitutional provisions that courts apply after the fact. The facial-recognition searches the state does regulate sit in a different statute, G.L. c. 6, § 220. License plates are not faces."],
+    ["q", "SJC", "While the defendant has a constitutionally protected expectation of privacy in the whole of his public movements, an interest which potentially could be implicated by the widespread use of ALPRs, that interest is not invaded by the limited extent and use of ALPR data in this case.", "Commonwealth v. McCarthy, 484 Mass. 493 (2020)"],
+    ["h2", "What the cameras are"],
+    ["p", "Flock Safety sells police departments a subscription: pole-mounted cameras, a cloud database, real-time alerts against stolen-car and missing-person hotlists, and the ability to search historical plate reads after a crime. Weymouth’s portal says the cameras do not detect facial recognition, people, gender, or race. That is a vendor assurance, not a laboratory finding published by the town."],
+    ["p", "Over 80 Massachusetts police departments have contracted with Flock Safety, per the ACLU of Massachusetts (October 2025). Flock’s business model rewards sharing: departments that open their cameras to the national network can search that network in return. Whether Weymouth has done so is supposed to appear in a portal field labeled “Organizations granted access to Weymouth MA PD data.” This newsroom has not independently extracted the partner names from that page."],
+    ["h2", "The portal, as written"],
+    ["p", "Weymouth’s transparency page, last updated 3 September 2026 at transparency.flocksafety.com/weymouth-ma-pd-/, is the closest thing in public to a municipal ALPR policy. It is not a Town Council ordinance. It is not a special order on department letterhead. It is a Flock template filled in with Weymouth’s numbers and Weymouth’s stated rules, including: data for law enforcement purposes only; data owned by Weymouth MA PD and never sold to third parties; all system access requires a valid reason and is stored indefinitely; hotlist hits must be human verified prior to action."],
+    ["p", "Camera counts do not agree with one another. The portal says 35. South Shore News, in August, said 34. Finding Flock’s OpenStreetMap compilation, checked 9 September, listed 31 in Weymouth Town. MyTownView listed 33 documented locations. A Norwell detective briefing in December 2025 put Weymouth at 53. This newsroom leads with the operator’s own number and treats the spread as a reason to request the installation list."],
+    ["h2", "What McCarthy actually held"],
+    ["p", "In 2016 and 2017, Barnstable police queried automatic readers on the Bourne and Sagamore bridges — four cameras, two crossings, the only roads on or off Cape Cod. Justice Gaziano, writing for the Supreme Judicial Court in April 2020, held that those queries were not a search under the Fourth Amendment or art. 14. He said yes to the larger principle. A dense enough historic ALPR network would invade a reasonable expectation of privacy and would constitute a search."],
+    ["q", "SJC", "With enough cameras in enough locations, the historic location data from an ALPR system in Massachusetts would invade a reasonable expectation of privacy and would constitute a search for constitutional purposes.", "Commonwealth v. McCarthy, 484 Mass. 493 (2020)"],
+    ["p", "Placement matters: cameras near a home or a house of worship reveal more than a camera on an interstate. Density matters: a network on every residential side street is not a network on a highway. Duration matters: the one-year EOPSS store then in force was, the Court said, certainly long enough to warrant constitutional protection. Weymouth’s portal lists thirty days, not a year. Thirty days is shorter. It is also long enough to reconstruct commuting, schooling, worship, and overnight stays if the cameras sit in the right places. The SJC has not been asked to apply its own test to a 35-camera city grid."],
+    ["h2", "What the cameras did in July"],
+    ["p", "On or about 26 July 2026, Weymouth Police said Flock cameras flagged a stolen vehicle on Washington Street around 4 a.m. Mass Daily News, citing the department, reported four Boston juveniles arrested at the Hanover Weymouth, two stolen vehicles recovered, and six break-ins cleared. This newsroom has not independently obtained the incident report. The portal’s hotlist policy says hits must be human verified prior to action. Whether that verification happened on Washington Street is a question for the incident file."],
+    ["h2", "The statute that does not exist"],
+    ["p", "Massachusetts has no ALPR-specific statute as of this edition. Nineteen other states have enacted rules on retention, sharing, or queries. H.3755, An Act establishing driver privacy protections, filed by Rep. Steven Owens and Rep. Lindsay N. Sabadosa, would cap ordinary retention at 14 days, bar monitoring of constitutionally protected activity, and require a warrant before police search another entity’s ALPR store. The Joint Committee on Transportation reported it favorably in March 2026. As of this week it sits in House Ways and Means. It is not the law that governs Weymouth’s cameras today."],
+    ["p", "The ACLU of Massachusetts counted more than 25 municipalities that had rejected, ended, or declined to renew Flock deployments as of September 2026, including Cambridge, Salem, Watertown, Brookline, Natick, and Framingham. Weymouth kept the network. On 2 September 2026, a Suffolk Superior Court judge ruled that Massachusetts State Police cannot withhold the locations of its automated license plate readers or information about when troopers search the system. MSP uses Vigilant Solutions, not Flock. The ruling does not bind Weymouth. It does indicate that camera locations and search logs are being treated, this month, as public records."],
+    ["h2", "The contract that is not here"],
+    ["p", "The ACLU of Massachusetts has published the template license many Flock customers signed. It grants the vendor a non-exclusive, worldwide, perpetual, royalty-free right and license to use aggregated data and to disclose agency footage for hotlist monitoring and investigative search. This newsroom does not know whether Weymouth signed the template, a rewrite, or something else. That is the difference between a publishable claim and an editorial. We can say the portal lists 30-day retention and a ban on immigration use. We can say the SJC wrote a density test in 2020. We cannot say, on this record, who may search Weymouth’s cameras tonight."],
+    ["p", "Public records requests go to the Weymouth Police Records Division, 140 Winter Street, East Weymouth, MA 02189, through the department’s NextRequest portal. Chief Richard M. Fuller is listed as police records access officer in a 2024 compilation; confirm before sending. G.L. c. 66, § 10 gives the division ten business days to answer in writing. Still missing from this package: the signed Flock contract, a standalone departmental ALPR policy PDF, the sharing-partner list, the Town Council or mayoral authorization, and search audit logs."],
+    ["note", "This story does not find that Weymouth’s Flock cameras are unconstitutional. Commonwealth v. McCarthy wrote a density test; it did not decide a 35-camera city. Anyone who says the cameras are, or are not, a search as a matter of present law is running ahead of the Court."],
+  ],
   "the-cost-of-proving-youre-right": [
     ["p", "The Fair Credit Reporting Act does not charge you to be believed. If an item on a nationwide file is incomplete or inaccurate, Equifax, Experian, and TransUnion must reinvestigate, free of charge, generally within 30 days of notice. That is the statute, not a slogan."],
     ["q", "FCRA", "the agency shall, free of charge, conduct a reasonable reinvestigation … before the end of the 30-day period beginning on the date on which the agency receives the notice of the dispute", "15 U.S.C. § 1681i(a)(1)(A)"],
@@ -614,7 +679,7 @@ for (const article of ARTICLES) {
       <p class="font-sans text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-slate">${escapeHtml(article.kicker)}</p>
       <h1 class="mt-4 font-display text-4xl font-semibold leading-[1.1] sm:text-5xl">${escapeHtml(article.title)}</h1>
       <p class="mt-5 font-display text-xl leading-snug text-muted">${escapeHtml(article.dek)}</p>
-      <p class="mt-6 text-sm text-muted">Newsroom Desk · 9 September 2026 · <a href="../../record/" class="underline">See the record</a></p>
+      <p class="mt-6 text-sm text-muted">Newsroom Desk · ${escapeHtml(article.published)} · <a href="../../record/" class="underline">See the record</a></p>
     </header>
     <div class="mx-auto max-w-3xl space-y-6 px-4 pb-16 sm:px-6">
       ${blocks}
@@ -629,6 +694,7 @@ for (const article of ARTICLES) {
       description: article.dek,
       prefix: "../../",
       active: "edition",
+      path: `/story/${article.slug}/`,
       body,
     }),
   );
