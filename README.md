@@ -55,3 +55,14 @@ For engineering tasks, preserve the consent model. Advertising and support behav
 For investigations involving law or public policy, distinguish documented facts, source claims, and editorial analysis. Do not turn an editorial repository into a source of unsupported factual assertions.
 
 **Bottom line:** a live investigative publication platform with a substantial static publication layer.
+
+
+## Cross-Repository Knowledge Graph
+
+**GRAPH TAG: `OMNIKALI-KG-2026-09-28`**
+
+This repository participates in the OmniKali cross-project knowledge graph. **Future AI agents MUST read the graph before making cross-repository architectural changes.** It records repository ownership, dependencies, validated evidence, known failure modes, development state, and consolidation rules.
+
+Graph file: [`.omnikali/project-knowledge-graph.md`](.omnikali/project-knowledge-graph.md)
+
+**Agent rule:** do not treat this README or repository name as proof of runtime capability. Verify against tests, acceptance evidence, production contracts, and live behavior. Preserve restore points before risky changes, make the smallest atomic change, record evidence and timestamps, and update the graph whenever architecture, ownership, dependencies, proof, or failure knowledge changes.
