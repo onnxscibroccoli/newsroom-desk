@@ -1,31 +1,43 @@
 # Newsroom Desk
 
-Published investigations 4, 5, and 6 — credit-report rights, Android accessibility, and background phone control — plus the reporting record behind them.
+**Status:** Published investigative publication / active editorial and web platform  
+**Repository:** `onnxscibroccoli/newsroom-desk`  
+**Documentation snapshot:** 2026-09-28 23:12 EDT
 
-## Live
+Newsroom Desk is a long-form investigative publishing application. It combines published stories, reporting records, citations, privacy/consent controls, and a React web application with a static publication snapshot.
 
-- **Public site (Vercel):** [https://newsroom-desk-five.vercel.app](https://newsroom-desk-five.vercel.app)
-- **Static pages:** [https://onnxscibroccoli.github.io/desk](https://onnxscibroccoli.github.io/desk)
-- **GitHub:** [https://github.com/onnxscibroccoli/newsroom-desk](https://github.com/onnxscibroccoli/newsroom-desk)
-- **Sister essay:** [Half a Mile](https://half-a-mile.vercel.app) · [GitHub Pages](https://onnxscibroccoli.github.io/)
+## What it does
 
-Vercel is the public front door. GitHub Pages serves the full `docs/` snapshot (stories, record, opt-in ads). Every published story back-links the others; the record lists them all. Search Console verification lives at `/google509c8bb541abfc72.html`.
+The current edition includes investigations covering credit-report rights, Android accessibility/background phone control, and a Weymouth camera-surveillance investigation. The repository also contains the reporting record behind the published stories.
 
-## Edition
+The editorial architecture is designed to distinguish the story from its supporting record.
 
-- [Your credit-report rights are free. The receipt is not.](https://onnxscibroccoli.github.io/desk/story/the-cost-of-proving-youre-right/)
-- [Android can see the button. It cannot finish the form.](https://onnxscibroccoli.github.io/desk/story/android-can-see-the-button/)
-- [Google built background phone control — for Google](https://onnxscibroccoli.github.io/desk/story/the-invisible-phone/)
-- [The record](https://onnxscibroccoli.github.io/desk/record/) — every live story is linked here
-- [Support and ads](https://onnxscibroccoli.github.io/desk/privacy/)
+## Repository map
 
-## Support
+Approximately 130 tracked files are present.
 
-Ads stay **off** unless the reader opts in. The default slot is Buy me a coffee via [Cash App $icoss](https://cash.app/$icoss). If the reader would rather not tip, opt-in paying ads sit in a non-intrusive bar at the bottom of the screen. Local Jules Gutter Cleaning ads ([267-667-2321](tel:+12676672321)) show only after a separate South Shore location opt-in. No third-party ad network loads until opt-in.
+- `src/` — React/TanStack application.
+- `src/components/` — desk shell, story cards, related stories, quote pulls, support/advertising components.
+- `src/lib/articles.ts` and `catalog.ts` — story/catalog data.
+- `src/lib/auth/` — authentication and session boundaries.
+- `src/lib/consent.ts` and consent store — reader-consent behavior.
+- `src/lib/app-data/` — application data/readiness layer.
+- `scripts/` — build, browser smoke, migration, auth-invariant, PWA, preview, and static-page tooling.
+- `docs/` — static public publication.
+- `migrations/` — database/auth schema.
+- `public/` — web/PWA assets.
 
-## Stack
+## Deployment state
 
-`src/` is React 19 + TanStack Start + Tailwind v4. `docs/` is the static snapshot for Vercel and GitHub Pages.
+The README and recent history document a live Vercel production surface plus a GitHub Pages static copy. Recent commits moved canonical publication/search metadata toward the GitHub Pages host while retaining the Vercel application.
+
+## Development cycle
+
+**PUBLISHED / ACTIVE MAINTENANCE.**
+
+The product is live, but both editorial and engineering work remain ongoing.
+
+## Development
 
 ```bash
 npm install
@@ -33,3 +45,13 @@ npm run dev
 npm run build
 npm run build:pages
 ```
+
+## AI model instructions
+
+For editorial tasks, inspect the source record and primary evidence before changing prose. Never invent a legal holding, source, quote, or factual detail.
+
+For engineering tasks, preserve the consent model. Advertising and support behavior must remain opt-in where the current implementation specifies it. Run the relevant browser/authentication tests before publishing.
+
+For investigations involving law or public policy, distinguish documented facts, source claims, and editorial analysis. Do not turn an editorial repository into a source of unsupported factual assertions.
+
+**Bottom line:** a live investigative publication platform with a substantial static publication layer.
