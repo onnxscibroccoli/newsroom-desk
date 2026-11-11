@@ -1,5 +1,8 @@
 # Newsroom Desk
 
+
+> **Project reviewer:** [Current evidence classification and ordered remediation](docs/PORTFOLIO_READINESS.md) · [tracking issue](https://github.com/onnxscibroccoli/newsroom-desk/issues/1). No unsupported production or professional-experience claims.
+
 **Status:** Published investigative publication / active editorial and web platform  
 **Repository:** `onnxscibroccoli/newsroom-desk`  
 **Documentation snapshot:** 2026-09-28 23:12 EDT
